@@ -13,7 +13,7 @@ import sys
 from agent import make_agent
 from cli import QUESTION, review
 from tools import RepositoryTools
-from model_trace import attach_trace
+from .model_trace import attach_trace
 
 
 def choose_folder():

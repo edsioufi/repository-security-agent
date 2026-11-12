@@ -16,7 +16,7 @@ class WebTests(unittest.TestCase):
             port = probe.getsockname()[1]
         process = subprocess.Popen(
             [sys.executable, '-c', (
-                "import os, web; from offline import ScriptedModel; "
+                "import os; import web_ui.__main__ as web; from tests.scripted_model import ScriptedModel; "
                 "os.environ['GEMINI_API_KEY']='test-only'; "
                 "original=web.make_agent; "
                 "web.make_agent=lambda source,name,key: "

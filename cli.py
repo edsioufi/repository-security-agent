@@ -75,25 +75,17 @@ def main():
     parser.add_argument(
         "--model", default=os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite"),
     )
-    parser.add_argument(
-        "--offline", action="store_true",
-        help="Demonstrate the real ADK loop with a scripted model, no API key",
-    )
     args = parser.parse_args()
     key = os.getenv("GEMINI_API_KEY", "").strip()
-    if not args.offline and not key:
-        parser.error("Set GEMINI_API_KEY, or use --offline without a key.")
+    if not key:
+        parser.error("Set GEMINI_API_KEY to run live reviews.")
     try:
         tools = RepositoryTools(args.repo)
     except (OSError, ValueError):
         parser.error("Choose an accessible local repository directory.")
-    model = None
-    if args.offline:
-        from offline import ScriptedModel
-        model = ScriptedModel()
-    show("MODE", "OFFLINE SCRIPTED DEMO" if model else "LIVE GEMINI")
+    show("MODE", "LIVE GEMINI")
     show("SOURCE", "Selected source excerpts appear here and go to the model.")
-    agent = make_agent(tools, args.model, key, model=model)
+    agent = make_agent(tools, args.model, key)
     return 0 if asyncio.run(review(agent, args.question)) else 1
 
 

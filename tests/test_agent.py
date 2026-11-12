@@ -8,7 +8,7 @@ from google.adk.tools import FunctionTool
 
 from agent import make_agent
 from cli import review
-from offline import ScriptedModel
+from tests.scripted_model import ScriptedModel
 from tools import RepositoryTools
 
 
