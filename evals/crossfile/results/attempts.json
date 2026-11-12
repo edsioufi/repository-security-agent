@@ -1,0 +1,290 @@
+[
+  {
+    "file": "a-agent-1.json",
+    "status": "completed",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "agent",
+    "calls": 5,
+    "error": null,
+    "verdict": "not_vulnerable"
+  },
+  {
+    "file": "a-agent-2.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "agent",
+    "calls": 2,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "a-agent-3.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "agent",
+    "calls": 3,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "a-single-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "single",
+    "calls": 1,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "a-single-2.json",
+    "status": "completed",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "single",
+    "calls": 1,
+    "error": null,
+    "verdict": "insufficient_evidence"
+  },
+  {
+    "file": "a-single-3.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "single",
+    "calls": 1,
+    "error": "JSONDecodeError",
+    "verdict": null
+  },
+  {
+    "file": "b-agent-1.json",
+    "status": "completed",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "agent",
+    "calls": 3,
+    "error": null,
+    "verdict": "not_vulnerable"
+  },
+  {
+    "file": "b-agent-2.json",
+    "status": "completed",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "agent",
+    "calls": 3,
+    "error": null,
+    "verdict": "not_vulnerable"
+  },
+  {
+    "file": "b-agent-3.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "agent",
+    "calls": 6,
+    "error": "JSONDecodeError",
+    "verdict": null
+  },
+  {
+    "file": "b-single-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "single",
+    "calls": 1,
+    "error": "JSONDecodeError",
+    "verdict": null
+  },
+  {
+    "file": "b-single-2.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "single",
+    "calls": 1,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "b-single-3.json",
+    "status": "completed",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "single",
+    "calls": 1,
+    "error": null,
+    "verdict": "not_vulnerable"
+  },
+  {
+    "file": "large/a-agent-1.json",
+    "status": "interrupted",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "agent",
+    "calls": 0,
+    "error": "User replaced static retrieval with whole-repository baseline; process terminated.",
+    "verdict": null
+  },
+  {
+    "file": "large/a-single-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "single",
+    "calls": 1,
+    "error": "JSONDecodeError",
+    "verdict": null
+  },
+  {
+    "file": "phase2/a-agent-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "agent",
+    "calls": 8,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "phase2/a-single-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "single",
+    "calls": 1,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "phase2/b-agent-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "agent",
+    "calls": 7,
+    "error": "JSONDecodeError",
+    "verdict": null
+  },
+  {
+    "file": "phase2/b-single-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "single",
+    "calls": 1,
+    "error": "JSONDecodeError",
+    "verdict": null
+  },
+  {
+    "file": "pr/a-agent-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "agent",
+    "calls": 4,
+    "error": "JSONDecodeError",
+    "verdict": null
+  },
+  {
+    "file": "pr/a-single-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "single",
+    "calls": 1,
+    "error": "JSONDecodeError",
+    "verdict": null
+  },
+  {
+    "file": "pr/b-agent-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "agent",
+    "calls": 5,
+    "error": "JSONDecodeError",
+    "verdict": null
+  },
+  {
+    "file": "pr/b-single-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.5-flash-lite",
+    "arm": "single",
+    "calls": 1,
+    "error": "JSONDecodeError",
+    "verdict": null
+  },
+  {
+    "file": "pr-current/a-agent-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.8-flash",
+    "arm": "agent",
+    "calls": 1,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "pr-current/a-single-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.8-flash",
+    "arm": "single",
+    "calls": 1,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "pr-current/b-agent-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.8-flash",
+    "arm": "agent",
+    "calls": 1,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "pr-current/b-single-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.8-flash",
+    "arm": "single",
+    "calls": 1,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "pr-stable/a-agent-1.json",
+    "status": "incomplete",
+    "model": "gemini-2.5-flash",
+    "arm": "agent",
+    "calls": 1,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "pr-stable/a-single-1.json",
+    "status": "incomplete",
+    "model": "gemini-2.5-flash",
+    "arm": "single",
+    "calls": 1,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "pr-stable/b-agent-1.json",
+    "status": "incomplete",
+    "model": "gemini-2.5-flash",
+    "arm": "agent",
+    "calls": 1,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "pr-stable/b-single-1.json",
+    "status": "incomplete",
+    "model": "gemini-2.5-flash",
+    "arm": "single",
+    "calls": 1,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "whole-repo/cpython-agent-1.json",
+    "status": "incomplete",
+    "model": "gemini-2.5-flash",
+    "arm": "agent",
+    "calls": 1,
+    "error": "RuntimeError",
+    "verdict": null
+  },
+  {
+    "file": "whole-repo-current/cpython-agent-1.json",
+    "status": "incomplete",
+    "model": "gemini-3.8-flash",
+    "arm": "agent",
+    "calls": 1,
+    "error": "RuntimeError",
+    "verdict": null
+  }
+]

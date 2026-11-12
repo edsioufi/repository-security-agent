@@ -1,0 +1,390 @@
+{
+  "rows": [
+    {
+      "run": "a-single-1",
+      "snapshot": "a",
+      "arm": "single",
+      "attempt": 1,
+      "status": "incomplete",
+      "verdict": null,
+      "expected": "vulnerable",
+      "raw_label_correct": false,
+      "audited_target_correct": false,
+      "grounded": false,
+      "audit_pending": false,
+      "citations": [],
+      "audit": {},
+      "calls": 1,
+      "seconds": 29.929,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "known_cost_usd": 0.0,
+      "unknown_usage_calls": 1
+    },
+    {
+      "run": "a-agent-1",
+      "snapshot": "a",
+      "arm": "agent",
+      "attempt": 1,
+      "status": "completed",
+      "verdict": "not_vulnerable",
+      "expected": "vulnerable",
+      "raw_label_correct": false,
+      "audited_target_correct": false,
+      "grounded": false,
+      "audit_pending": false,
+      "citations": [
+        {
+          "citation": {
+            "path": "rpcapd/daemon.c",
+            "start_line": 1541,
+            "end_line": 1555,
+            "quote": "if (plen > sourcelen - 1)\n\t{\n\t\tpcap_snprintf(errmsgbuf, PCAP_ERRBUF_SIZE, \"Source string too long\");\n\t\tgoto error;\n\t}\n\n\tnread = sock_recv(pars->sockctrl, source, plen,\n\t    SOCK_RECEIVEALL_YES|SOCK_EOF_IS_ERROR, errbuf, PCAP_ERRBUF_SIZE);\n\tif (nread == -1)\n\t{\n\t\trpcapd_log(LOGPRIO_ERROR, \"Read from client failed: %s\", errbuf);\n\t\treturn -1;\n\t}\n\tsource[nread] = '\\0';"
+          },
+          "valid_and_seen": true
+        },
+        {
+          "citation": {
+            "path": "rpcapd/daemon.c",
+            "start_line": 1562,
+            "end_line": 1567,
+            "quote": "if ((fp = pcap_open_live(source,\n\t\t1500                   ,\n\t\t0                ,\n\t\t1000                   ,\n\t\textmsgbuf)) == NULL)\n\t\tgoto error;"
+          },
+          "valid_and_seen": false
+        }
+      ],
+      "audit": {
+        "mechanism_correct": false,
+        "all_rubric_items": false,
+        "rationale": "Incorrectly assumes pcap_open_live only captures locally; did not inspect its implementation."
+      },
+      "calls": 5,
+      "seconds": 35.025,
+      "input_tokens": 14833,
+      "output_tokens": 552,
+      "known_cost_usd": 0.0058299,
+      "unknown_usage_calls": 0
+    },
+    {
+      "run": "b-single-1",
+      "snapshot": "b",
+      "arm": "single",
+      "attempt": 1,
+      "status": "incomplete",
+      "verdict": null,
+      "expected": "not_vulnerable",
+      "raw_label_correct": false,
+      "audited_target_correct": false,
+      "grounded": false,
+      "audit_pending": false,
+      "citations": [],
+      "audit": {},
+      "calls": 1,
+      "seconds": 3.448,
+      "input_tokens": 1762,
+      "output_tokens": 343,
+      "known_cost_usd": 0.0013861,
+      "unknown_usage_calls": 0
+    },
+    {
+      "run": "b-agent-1",
+      "snapshot": "b",
+      "arm": "agent",
+      "attempt": 1,
+      "status": "completed",
+      "verdict": "not_vulnerable",
+      "expected": "not_vulnerable",
+      "raw_label_correct": true,
+      "audited_target_correct": true,
+      "grounded": false,
+      "audit_pending": false,
+      "citations": [
+        {
+          "citation": {
+            "path": "rpcapd/daemon.c",
+            "start_line": 1561,
+            "end_line": 1565,
+            "quote": "\tif (is_url(source))\n\t{\n\t\tpcap_snprintf(errmsgbuf, PCAP_ERRBUF_SIZE, \"Source string refers to a remote device\");\n\t\tgoto error;\n\t}"
+          },
+          "valid_and_seen": true
+        },
+        {
+          "citation": {
+            "path": "rpcapd/daemon.c",
+            "start_line": 1569,
+            "end_line": 1574,
+            "quote": "\tif ((fp = pcap_open_live(source,\n\t\t\t1500                   ,\n\t\t\t0                ,\n\t\t\t1000                   ,\n\t\t\terrmsgbuf)) == NULL)\n\t\tgoto error;"
+          },
+          "valid_and_seen": true
+        }
+      ],
+      "audit": {
+        "mechanism_correct": true,
+        "all_rubric_items": false,
+        "rationale": "Recognizes URL rejection, but does not inspect the URL predicate or the cross-file remote connection implementation."
+      },
+      "calls": 3,
+      "seconds": 13.492,
+      "input_tokens": 7041,
+      "output_tokens": 411,
+      "known_cost_usd": 0.0031398,
+      "unknown_usage_calls": 0
+    },
+    {
+      "run": "a-single-2",
+      "snapshot": "a",
+      "arm": "single",
+      "attempt": 2,
+      "status": "completed",
+      "verdict": "insufficient_evidence",
+      "expected": "vulnerable",
+      "raw_label_correct": false,
+      "audited_target_correct": false,
+      "grounded": false,
+      "audit_pending": false,
+      "citations": [
+        {
+          "citation": {
+            "path": "rpcapd/daemon.c",
+            "start_line": 1562,
+            "end_line": 1567,
+            "quote": "\tif ((fp = pcap_open_live(source,\n\t\t\t1500                   ,\n\t\t\t0                ,\n\t\t\t1000                   ,\n\t\t\terrmsgbuf)) == NULL)\n\t\tgoto error;"
+          },
+          "valid_and_seen": true
+        }
+      ],
+      "audit": {
+        "mechanism_correct": false,
+        "all_rubric_items": false,
+        "rationale": "Abstains appropriately without callee evidence."
+      },
+      "calls": 1,
+      "seconds": 2.087,
+      "input_tokens": 1682,
+      "output_tokens": 286,
+      "known_cost_usd": 0.0012196,
+      "unknown_usage_calls": 0
+    },
+    {
+      "run": "a-agent-2",
+      "snapshot": "a",
+      "arm": "agent",
+      "attempt": 2,
+      "status": "incomplete",
+      "verdict": null,
+      "expected": "vulnerable",
+      "raw_label_correct": false,
+      "audited_target_correct": false,
+      "grounded": false,
+      "audit_pending": false,
+      "citations": [],
+      "audit": {},
+      "calls": 2,
+      "seconds": 34.238,
+      "input_tokens": 1896,
+      "output_tokens": 22,
+      "known_cost_usd": 0.0006238,
+      "unknown_usage_calls": 1
+    },
+    {
+      "run": "b-single-2",
+      "snapshot": "b",
+      "arm": "single",
+      "attempt": 2,
+      "status": "incomplete",
+      "verdict": null,
+      "expected": "not_vulnerable",
+      "raw_label_correct": false,
+      "audited_target_correct": false,
+      "grounded": false,
+      "audit_pending": false,
+      "citations": [],
+      "audit": {},
+      "calls": 1,
+      "seconds": 10.377,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "known_cost_usd": 0.0,
+      "unknown_usage_calls": 1
+    },
+    {
+      "run": "b-agent-2",
+      "snapshot": "b",
+      "arm": "agent",
+      "attempt": 2,
+      "status": "completed",
+      "verdict": "not_vulnerable",
+      "expected": "not_vulnerable",
+      "raw_label_correct": true,
+      "audited_target_correct": true,
+      "grounded": false,
+      "audit_pending": false,
+      "citations": [
+        {
+          "citation": {
+            "path": "rpcapd/daemon.c",
+            "start_line": 1561,
+            "end_line": 1565,
+            "quote": "\tif (is_url(source))\n\t{\n\t\tpcap_snprintf(errmsgbuf, PCAP_ERRBUF_SIZE, \"Source string refers to a remote device\");\n\t\tgoto error;\n\t}"
+          },
+          "valid_and_seen": true
+        },
+        {
+          "citation": {
+            "path": "rpcapd/daemon.c",
+            "start_line": 1569,
+            "end_line": 1574,
+            "quote": "\tif ((fp = pcap_open_live(source,\n\t\t\t1500                   ,\n\t\t\t0                ,\n\t\t\t1000                   ,\n\t\t\terrmsgbuf)) == NULL)\n\t\tgoto error;"
+          },
+          "valid_and_seen": true
+        }
+      ],
+      "audit": {
+        "mechanism_correct": true,
+        "all_rubric_items": false,
+        "rationale": "Recognizes URL rejection, but does not inspect the URL predicate or the cross-file remote connection implementation."
+      },
+      "calls": 3,
+      "seconds": 15.854,
+      "input_tokens": 7048,
+      "output_tokens": 401,
+      "known_cost_usd": 0.0031169,
+      "unknown_usage_calls": 0
+    },
+    {
+      "run": "a-single-3",
+      "snapshot": "a",
+      "arm": "single",
+      "attempt": 3,
+      "status": "incomplete",
+      "verdict": null,
+      "expected": "vulnerable",
+      "raw_label_correct": false,
+      "audited_target_correct": false,
+      "grounded": false,
+      "audit_pending": false,
+      "citations": [],
+      "audit": {},
+      "calls": 1,
+      "seconds": 13.196,
+      "input_tokens": 1682,
+      "output_tokens": 246,
+      "known_cost_usd": 0.0011196,
+      "unknown_usage_calls": 0
+    },
+    {
+      "run": "a-agent-3",
+      "snapshot": "a",
+      "arm": "agent",
+      "attempt": 3,
+      "status": "incomplete",
+      "verdict": null,
+      "expected": "vulnerable",
+      "raw_label_correct": false,
+      "audited_target_correct": false,
+      "grounded": false,
+      "audit_pending": false,
+      "citations": [],
+      "audit": {},
+      "calls": 3,
+      "seconds": 14.022,
+      "input_tokens": 3964,
+      "output_tokens": 62,
+      "known_cost_usd": 0.0013442,
+      "unknown_usage_calls": 1
+    },
+    {
+      "run": "b-single-3",
+      "snapshot": "b",
+      "arm": "single",
+      "attempt": 3,
+      "status": "completed",
+      "verdict": "not_vulnerable",
+      "expected": "not_vulnerable",
+      "raw_label_correct": true,
+      "audited_target_correct": true,
+      "grounded": false,
+      "audit_pending": false,
+      "citations": [
+        {
+          "citation": {
+            "path": "rpcapd/daemon.c",
+            "start_line": 1561,
+            "end_line": 1565,
+            "quote": "if (is_url(source))\n\t{\n\t\tpcap_snprintf(errmsgbuf, PCAP_ERRBUF_SIZE, \"Source string refers to a remote device\");\n\t\tgoto error;\n\t}"
+          },
+          "valid_and_seen": true
+        },
+        {
+          "citation": {
+            "path": "rpcapd/daemon.c",
+            "start_line": 1569,
+            "end_line": 1574,
+            "quote": "if ((fp = pcap_open_live(source,\n\t\t\t1500                   ,\n\t\t\t0                ,\n\t\t\t1000                   ,\n\t\t\terrmsgbuf)) == NULL)\n\t\tgoto error;"
+          },
+          "valid_and_seen": true
+        }
+      ],
+      "audit": {
+        "mechanism_correct": true,
+        "all_rubric_items": false,
+        "rationale": "Recognizes URL rejection, but does not inspect the URL predicate or the cross-file remote connection implementation."
+      },
+      "calls": 1,
+      "seconds": 8.421,
+      "input_tokens": 1762,
+      "output_tokens": 366,
+      "known_cost_usd": 0.0014436,
+      "unknown_usage_calls": 0
+    },
+    {
+      "run": "b-agent-3",
+      "snapshot": "b",
+      "arm": "agent",
+      "attempt": 3,
+      "status": "incomplete",
+      "verdict": null,
+      "expected": "not_vulnerable",
+      "raw_label_correct": false,
+      "audited_target_correct": false,
+      "grounded": false,
+      "audit_pending": false,
+      "citations": [],
+      "audit": {},
+      "calls": 6,
+      "seconds": 52.56,
+      "input_tokens": 16187,
+      "output_tokens": 571,
+      "known_cost_usd": 0.006283599999999999,
+      "unknown_usage_calls": 0
+    }
+  ],
+  "totals": {
+    "single": {
+      "planned": 6,
+      "completed": 2,
+      "raw_labels_correct": 1,
+      "audited_target_correct": 1,
+      "grounded": 0,
+      "abstentions": 1,
+      "false_alarms": 0,
+      "misses": 0,
+      "pair_successes": 0,
+      "model_calls": 6,
+      "known_cost_usd": 0.0051689
+    },
+    "agent": {
+      "planned": 6,
+      "completed": 3,
+      "raw_labels_correct": 2,
+      "audited_target_correct": 2,
+      "grounded": 0,
+      "abstentions": 0,
+      "false_alarms": 0,
+      "misses": 1,
+      "pair_successes": 0,
+      "model_calls": 22,
+      "known_cost_usd": 0.0203382
+    }
+  }
+}

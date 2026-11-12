@@ -1,0 +1,4 @@
+
+Keep the final JSON compact: at most six evidence items, each quoting one
+nonempty source line, with start_line equal to end_line. Keep explanation under
+180 words and limitations under 60 words. This prevents output truncation.

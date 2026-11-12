@@ -1,0 +1,27 @@
+{
+  "b-single-3": {
+    "mechanism_correct": true,
+    "all_rubric_items": false,
+    "rationale": "Recognizes URL rejection, but does not inspect the URL predicate or the cross-file remote connection implementation."
+  },
+  "a-single-2": {
+    "mechanism_correct": false,
+    "all_rubric_items": false,
+    "rationale": "Abstains appropriately without callee evidence."
+  },
+  "b-agent-1": {
+    "mechanism_correct": true,
+    "all_rubric_items": false,
+    "rationale": "Recognizes URL rejection, but does not inspect the URL predicate or the cross-file remote connection implementation."
+  },
+  "a-agent-1": {
+    "mechanism_correct": false,
+    "all_rubric_items": false,
+    "rationale": "Incorrectly assumes pcap_open_live only captures locally; did not inspect its implementation."
+  },
+  "b-agent-2": {
+    "mechanism_correct": true,
+    "all_rubric_items": false,
+    "rationale": "Recognizes URL rejection, but does not inspect the URL predicate or the cross-file remote connection implementation."
+  }
+}

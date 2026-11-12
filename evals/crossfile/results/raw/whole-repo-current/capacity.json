@@ -1,0 +1,10 @@
+{
+  "model": "gemini-3.8-flash",
+  "input_bytes": 110827360,
+  "files": 4724,
+  "status": "context_overflow",
+  "question": "Can SimpleHTTPRequestHandler serve a file outside its configured directory through a symbolic link? Trace how URL paths become opened files; distinguish this from ordinary '..' path traversal. Inspect implementation and cite exact paths and lines. This is a behavior question, not a claim that documented behavior is an undisclosed vulnerability.",
+  "protocol_sha256": "a040dea119f4ba34cdc949b5cf50e022e5603d12e7bba067afb4f70f97899e8e",
+  "input_token_limit": 1048576,
+  "input_tokens": 48957530
+}

@@ -1,0 +1,9 @@
+{
+  "purpose": "Capacity measurement of a strict prefix only; never supplied as a truncated review baseline.",
+  "prefix_characters": 8000000,
+  "whole_characters": 110811460,
+  "model": "gemini-3.8-flash",
+  "input_token_limit": 1048576,
+  "prefix_tokens": 2868445,
+  "prefix_already_exceeds_context": true
+}

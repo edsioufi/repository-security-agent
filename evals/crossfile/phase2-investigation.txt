@@ -1,0 +1,11 @@
+
+Investigation procedure:
+1. Identify the calls and predicates whose behavior determines the answer.
+2. Search for their definitions, then READ their implementations. A name,
+   declaration, search hit, or familiarity with an API is not proof of behavior.
+3. Follow relevant calls across files until the security-sensitive operation
+   or effective guard is established. Check conditional compilation against
+   the stated build assumption. If search results are truncated, narrow them.
+4. Do not repeat the supplied function instead of inspecting missing context.
+5. Reserve your last model call for the final answer. If the investigation
+   remains incomplete, say insufficient_evidence rather than assuming safety.

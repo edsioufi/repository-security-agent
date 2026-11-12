@@ -1,0 +1,12 @@
+{
+  "model": "gemini-2.5-flash",
+  "input_bytes": 110827360,
+  "files": 4724,
+  "status": "capacity_request_failed",
+  "question": "Can SimpleHTTPRequestHandler serve a file outside its configured directory through a symbolic link? Trace how URL paths become opened files; distinguish this from ordinary '..' path traversal. Inspect implementation and cite exact paths and lines. This is a behavior question, not a claim that documented behavior is an undisclosed vulnerability.",
+  "protocol_sha256": "f976577d3c920244cedfbc6d530aac090ab18757b0eca131cdc41c7a680b3525",
+  "input_token_limit": 1048576,
+  "error_type": "ClientError",
+  "error_code": 404,
+  "error_message": "This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://aistudio.google.com/docs/get-started)."
+}
