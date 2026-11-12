@@ -85,8 +85,8 @@ extensions. Evaluation work will be planned and reviewed before implementation.
 # Live: set GEMINI_API_KEY privately, then omit --offline.
 ```
 
-Open http://127.0.0.1:8767. Enter a question and watch the streamed tool activity
-and answer. The source folder is selected at startup, not through the browser.
+Open http://127.0.0.1:8767. Click Run review to inspect the repository and watch the streamed
+tool activity and answer. The source folder is selected at startup, not through the browser.
 The UI uses the same agent and runner as the CLI. It has no extra dependencies,
 account system, upload endpoint, or deployment configuration. It binds only to
 loopback and checks request origin, host, and a per-process request token.

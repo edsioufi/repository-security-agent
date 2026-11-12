@@ -62,11 +62,11 @@ def serve(repo, model_name, offline=False, port=8767):
                 size = int(self.headers.get("Content-Length", "0"))
                 if not 0 < size <= 4096:
                     raise ValueError()
-                question = json.loads(self.rfile.read(size))["question"]
-                if not isinstance(question, str) or not 1 <= len(question) <= 2000:
+                request = json.loads(self.rfile.read(size))
+                if request != {}:
                     raise ValueError()
             except (ValueError, KeyError, TypeError):
-                self.send_error(400, "Provide a question of 1–2000 characters.")
+                self.send_error(400, "Expected an empty JSON object.")
                 return
             self.respond(200, "application/x-ndjson; charset=utf-8")
 
@@ -81,7 +81,7 @@ def serve(repo, model_name, offline=False, port=8767):
                 model = ScriptedModel()
             agent = make_agent(source, model_name, key, model=model)
             try:
-                asyncio.run(review(agent, question, emit=emit))
+                asyncio.run(review(agent, QUESTION, emit=emit))
             except (BrokenPipeError, ConnectionResetError):
                 pass
 

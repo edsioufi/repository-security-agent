@@ -32,6 +32,7 @@ class WebTests(unittest.TestCase):
                 self.fail('Web server did not start')
             self.assertEqual(response.status, 200)
             self.assertIn('Offline scripted demonstration', page)
+            self.assertNotIn('Review question', page)
             token = re.search("'X-Review-Token': '([^']+)'", page)[1]
             headers = {
                 'Content-Type': 'application/json',
@@ -39,13 +40,13 @@ class WebTests(unittest.TestCase):
                 'X-Review-Token': token,
             }
             conn = http.client.HTTPConnection('127.0.0.1', port, timeout=15)
-            conn.request('POST', '/review', json.dumps({'question': 'Review'}),
+            conn.request('POST', '/review', json.dumps({}),
                          headers | {'Origin': 'https://outside.example'})
             denied = conn.getresponse()
             self.assertEqual(denied.status, 403)
             denied.read()
             conn = http.client.HTTPConnection('127.0.0.1', port, timeout=15)
-            conn.request('POST', '/review', json.dumps({'question': 'Review'}),
+            conn.request('POST', '/review', json.dumps({}),
                          headers)
             response = conn.getresponse()
             self.assertEqual(response.status, 200)
