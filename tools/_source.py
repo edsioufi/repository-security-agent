@@ -1,5 +1,5 @@
 """
-Small, framework-independent snapshot and access boundary for the workshop.
+Small, framework-independent snapshot and access boundary for source review.
 """
 
 import os

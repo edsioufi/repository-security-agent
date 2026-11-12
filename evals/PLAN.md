@@ -1,7 +1,7 @@
 # Evaluation proposal
 
 Status: plan only. No benchmark runner, optimization, or results have been added.
-Implement after instructor review; keep main's small CLI unchanged.
+Implement after review; keep main's small CLI unchanged.
 
 ## Question
 
@@ -16,7 +16,7 @@ with expected category/CWE labels:
 https://github.com/OWASP-Benchmark/BenchmarkPython
 https://owasp.github.io/www-project-benchmark/
 
-Pin a specific commit before selecting cases. We already have a workshop cache
+Pin a specific commit before selecting cases. We already have a local cache
 associated with f1291485808b66e20ddb6b01b10dc71b3df8c8ba; verify that provenance
 and source hashes before using it. Do not run the deliberately vulnerable app.
 
@@ -46,7 +46,7 @@ B: identical tools/model/question/budgets, plus one evidence-checking instructio
 Do not decide from a search snippet alone. If you cannot obtain that context,
 state the missing evidence and the limitation.”
 
-This is a hypothesis, not a promised gain. The earlier workshop had an agent
+This is a hypothesis, not a promised gain. An earlier exploratory run had an agent
 miss a shell invocation after seeing only a search snippet; use that failure to
 motivate the idea, never as the held-out success case. Freeze B after inspecting
 only the development set. Keep the holdout closed until the final comparison.
