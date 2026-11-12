@@ -12,11 +12,7 @@ Python 3.11+ on macOS/Linux (Windows: WSL):
 ```sh
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python cli.py --offline
 ```
-
-Offline mode uses a **scripted fake model** with the real ADK runner and real
-local tools. It needs no key or network and makes no security assessment.
 
 For the live agent, set `GEMINI_API_KEY` privately in your terminal environment,
 then run:
@@ -38,8 +34,7 @@ Provider access and quotas still apply.
 3. `cli.py`: send the question to ADK and display events. ADK owns the repeated
    model/tool exchange; the `async for` loop here displays that exchange.
 
-`tools/_source.py` is supplied file-access plumbing. `offline.py` is only the
-no-key fallback. The two files in `sample/` are synthetic source to inspect.
+`tools/_source.py` is supplied file-access plumbing. The two files in `sample/` are synthetic source to inspect.
 
 Try a tool directly, without ADK or an API key:
 
@@ -75,5 +70,5 @@ There is no shell-execution tool and no automatic writing or publishing.
 
 ## Branches
 
-`main` keeps the small CLI implementation. `dev` contains optional interface
-extensions. Evaluation work will be planned and reviewed before implementation.
+`main` keeps the small CLI implementation. `web-ui` contains optional interface
+extensions. `evals` contains the evaluation experiments.
