@@ -10,12 +10,20 @@ import unittest
 
 
 class WebTests(unittest.TestCase):
-    def test_offline_stream_and_request_boundary(self):
+    def test_stream_and_request_boundary(self):
         with socket.socket() as probe:
             probe.bind(('127.0.0.1', 0))
             port = probe.getsockname()[1]
         process = subprocess.Popen(
-            [sys.executable, 'web.py', '--offline', '--port', str(port)],
+            [sys.executable, '-c', (
+                "import os, web; "
+                "from tests.scripted_model import ScriptedModel; "
+                "os.environ['GEMINI_API_KEY']='test-only'; "
+                "original=web.make_agent; "
+                "web.make_agent=lambda source,name,key: "
+                "original(source,name,key,model=ScriptedModel()); "
+                f"web.serve('sample', 'test', port={port})"
+            )],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         )
         try:
@@ -31,7 +39,7 @@ class WebTests(unittest.TestCase):
             else:
                 self.fail('Web server did not start')
             self.assertEqual(response.status, 200)
-            self.assertIn('Offline scripted demonstration', page)
+            self.assertIn('Live Gemini', page)
             self.assertNotIn('Review question', page)
             token = re.search("'X-Review-Token': '([^']+)'", page)[1]
             headers = {

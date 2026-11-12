@@ -12,14 +12,14 @@ from cli import QUESTION, review
 from tools import RepositoryTools
 
 
-def serve(repo, model_name, offline=False, port=8767):
+def serve(repo, model_name, port=8767):
     # The source root is chosen by the local operator, never a web request.
     source = RepositoryTools(repo)
     key = os.getenv("GEMINI_API_KEY", "").strip()
-    if not offline and not key:
-        raise ValueError("Set GEMINI_API_KEY or pass --offline.")
+    if not key:
+        raise ValueError("Set GEMINI_API_KEY to run live reviews.")
     token = secrets.token_urlsafe(32)
-    mode = "Offline scripted demonstration" if offline else "Live Gemini"
+    mode = "Live Gemini"
     page = Path(__file__).with_name("web.html").read_text()
     page = page.replace("__TOKEN__", token).replace("__MODE__", mode)
     origin = f"http://127.0.0.1:{port}"
@@ -75,11 +75,7 @@ def serve(repo, model_name, offline=False, port=8767):
                 self.wfile.write((event + "\n").encode())
                 self.wfile.flush()
 
-            model = None
-            if offline:
-                from offline import ScriptedModel
-                model = ScriptedModel()
-            agent = make_agent(source, model_name, key, model=model)
+            agent = make_agent(source, model_name, key)
             try:
                 asyncio.run(review(agent, QUESTION, emit=emit))
             except (BrokenPipeError, ConnectionResetError):
@@ -97,13 +93,12 @@ def serve(repo, model_name, offline=False, port=8767):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("repo", nargs="?", default="sample")
-    parser.add_argument("--offline", action="store_true")
     parser.add_argument("--port", type=int, default=8767)
     parser.add_argument(
         "--model", default=os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite"),
     )
     args = parser.parse_args()
     try:
-        serve(args.repo, args.model, args.offline, args.port)
+        serve(args.repo, args.model, args.port)
     except (ValueError, OSError) as error:
         parser.exit(1, f"Cannot start: {error}\n")
