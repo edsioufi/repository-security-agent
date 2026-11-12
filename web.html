@@ -12,13 +12,17 @@ button { margin: 12px 12px 12px 0; padding: 10px 18px; font: inherit;
 button:disabled { opacity: .5; }
 pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 16px;
   background: #eef1f5; font: 14px/1.5 ui-monospace, monospace; }
-#activity li { margin: 8px 0; }
+.message { border-top: 1px solid #ccd3df; margin-top: 24px; }
+.message h3 { margin-bottom: 8px; }
+.message p { white-space: pre-wrap; overflow-wrap: anywhere; }
+[role="tab"] { background: transparent; color: inherit; border-radius: 0;
+  border-bottom: 2px solid transparent; }
+[role="tab"][aria-selected="true"] { border-bottom-color: #2446b0; }
 details { margin: 10px 0; }
 summary { cursor: pointer; }
 .model-call { border-top: 1px solid #ccd3df; margin-top: 24px; }
 .reused { color: #5b6472; }
 pre { max-height: 420px; overflow: auto; }
-#answer { white-space: pre-wrap; overflow-wrap: anywhere; }
 small { color: #4a576a; }
 input { box-sizing: border-box; width: 100%; padding: 10px; font: inherit;
   border: 1px solid #b8c2d0; border-radius: 5px; }
@@ -35,18 +39,47 @@ label { display: block; margin-bottom: 6px; }
 <span id="status" role="status">Ready</span>
 </form>
 <small>Live reviews send retrieved source to Gemini.</small>
-<h2>Tool sequence</h2><ol id="activity"></ol>
+<div role="tablist" aria-label="Review details">
+<button id="history-tab" role="tab" aria-selected="true"
+  aria-controls="history-panel">History</button>
+<button id="calls-tab" role="tab" aria-selected="false" tabindex="-1"
+  aria-controls="calls-panel">LLM calls</button>
+</div>
+<section id="history-panel" role="tabpanel" aria-labelledby="history-tab">
+<div id="history">No messages yet.</div>
+</section>
+<section id="calls-panel" role="tabpanel" aria-labelledby="calls-tab" hidden>
 <h2>LLM calls</h2>
 <p>Each request includes the conversation so far. Earlier messages and tool
 results are sent again. Expand a message to see its content.</p>
 <div id="model-calls">No calls yet.</div>
-<h2>Answer</h2><div id="answer" aria-live="polite">No answer yet.</div>
+</section>
 <script>
 const form = document.querySelector('#form');
 const run = document.querySelector('#run');
 const status = document.querySelector('#status');
-const activity = document.querySelector('#activity');
-const answer = document.querySelector('#answer');
+const history = document.querySelector('#history');
+const tabs = [...document.querySelectorAll('[role="tab"]')];
+function selectTab(selected) {
+  tabs.forEach(tab => {
+    const active = tab === selected;
+    tab.setAttribute('aria-selected', String(active));
+    tab.tabIndex = active ? 0 : -1;
+    document.getElementById(tab.getAttribute('aria-controls')).hidden = !active;
+  });
+}
+tabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => selectTab(tab));
+  tab.addEventListener('keydown', event => {
+    const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End'];
+    if (!keys.includes(event.key)) return;
+    event.preventDefault();
+    const next = event.key === 'Home' ? tabs[0] :
+      event.key === 'End' ? tabs[tabs.length - 1] : tabs[1 - index];
+    selectTab(next);
+    next.focus();
+  });
+});
 const modelCalls = document.querySelector('#model-calls');
 const repo = document.querySelector('#repo');
 const browse = document.querySelector('#browse');
@@ -70,11 +103,27 @@ form.addEventListener('submit', async event => {
   event.preventDefault();
   run.disabled = browse.disabled = repo.disabled = true;
   status.textContent = 'Running…';
-  activity.textContent = '';
+  history.textContent = '';
+  selectTab(tabs[0]);
   modelCalls.textContent = '';
   const calls = new Map();
   let previousMessages = new Set();
-  const pendingTools = new Map();
+  let started = false;
+  let lastAssistantText = '';
+  function message(role, value, expandable=false) {
+    const entry = document.createElement('article');
+    entry.className = 'message';
+    const heading = document.createElement('h3');
+    heading.textContent = role;
+    entry.append(heading);
+    if (expandable) detail(entry, 'Show content', value);
+    else {
+      const body = document.createElement('p');
+      body.textContent = value;
+      entry.append(body);
+    }
+    history.append(entry);
+  }
   function detail(parent, title, value, open=false) {
     const node = document.createElement('details');
     node.open = open;
@@ -90,6 +139,14 @@ form.addEventListener('submit', async event => {
   function modelEvent(item) {
     const v = item.value;
     if (item.label === 'LLM INPUT') {
+      if (!started) {
+        message('System', v.system_instruction, true);
+        v.messages.forEach(m => {
+          const text = (m.parts || []).map(p => p.text || '').join('\n');
+          if (text) message(m.role === 'user' ? 'User' : 'Assistant', text);
+        });
+        started = true;
+      }
       const section = document.createElement('section');
       section.className = 'model-call';
       const heading = document.createElement('h3');
@@ -116,36 +173,32 @@ form.addEventListener('submit', async event => {
       calls.set(v.call, section);
       modelCalls.append(section);
     } else {
+      const text = (v.content?.parts || []).map(p => p.text || '').join('\n');
+      if (text) {
+        message('Assistant · LLM call ' + v.call, text);
+        lastAssistantText = text;
+      }
       detail(calls.get(v.call) || modelCalls, 'Output from LLM call ' + v.call,
         v, true);
     }
   }
-  answer.textContent = 'Waiting for the agent…';
   let finished = false;
   function display(line) {
     if (!line.trim()) return;
     const item = JSON.parse(line);
     if (item.label.startsWith('LLM ')) modelEvent(item);
     else if (item.label.startsWith('TOOL CALL: ')) {
-      const name = item.label.slice(11);
-      const tool = document.createElement('li');
-      detail(tool, name, item.value);
-      activity.append(tool);
-      if (!pendingTools.has(name)) pendingTools.set(name, []);
-      pendingTools.get(name).push(tool);
+      message('Assistant → ' + item.label.slice(11), item.value, true);
     } else if (item.label.startsWith('TOOL RESULT: ')) {
-      const name = item.label.slice(13);
-      const tool = pendingTools.get(name)?.shift();
-      detail(tool || activity, 'Result: ' + name, item.value);
-    } else if (item.label === 'FINAL ANSWER') answer.textContent = item.value;
-    else if (item.label === 'STATUS') {
+      message('Tool · ' + item.label.slice(13), item.value, true);
+    } else if (item.label === 'FINAL ANSWER') {
+      if (item.value !== lastAssistantText) message('Assistant', item.value);
+    } else if (item.label === 'STATUS') {
       status.textContent = item.value;
       finished = true;
-      if (item.value !== 'completed') answer.textContent = 'Review incomplete.';
+      if (item.value !== 'completed') message('Run status', 'Review incomplete.');
     } else {
-      const line = document.createElement('li');
-      line.textContent = item.label + ': ' + JSON.stringify(item.value);
-      activity.append(line);
+      message(item.label, item.value, typeof item.value !== 'string');
     }
   }
   try {
@@ -174,7 +227,7 @@ form.addEventListener('submit', async event => {
     if (!finished) throw new Error('Connection closed before completion.');
   } catch (error) {
     status.textContent = 'incomplete';
-    answer.textContent = error.message;
+    message('Error', error.message);
   } finally { run.disabled = browse.disabled = repo.disabled = false; }
 });
 </script>
