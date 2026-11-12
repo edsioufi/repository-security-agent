@@ -12,7 +12,12 @@ button { margin: 12px 12px 12px 0; padding: 10px 18px; font: inherit;
 button:disabled { opacity: .5; }
 pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 16px;
   background: #eef1f5; font: 14px/1.5 ui-monospace, monospace; }
-#activity { max-height: 340px; overflow: auto; }
+#activity li { margin: 8px 0; }
+details { margin: 10px 0; }
+summary { cursor: pointer; }
+.model-call { border-top: 1px solid #ccd3df; margin-top: 24px; }
+.reused { color: #5b6472; }
+pre { max-height: 420px; overflow: auto; }
 #answer { white-space: pre-wrap; overflow-wrap: anywhere; }
 small { color: #4a576a; }
 input { box-sizing: border-box; width: 100%; padding: 10px; font: inherit;
@@ -30,7 +35,11 @@ label { display: block; margin-bottom: 6px; }
 <span id="status" role="status">Ready</span>
 </form>
 <small>Live reviews send retrieved source to Gemini.</small>
-<h2>Tool activity</h2><pre id="activity">No calls yet.</pre>
+<h2>Tool sequence</h2><ol id="activity"></ol>
+<h2>LLM calls</h2>
+<p>Each request includes the conversation so far. Earlier messages and tool
+results are sent again. Expand a message to see its content.</p>
+<div id="model-calls">No calls yet.</div>
 <h2>Answer</h2><div id="answer" aria-live="polite">No answer yet.</div>
 <script>
 const form = document.querySelector('#form');
@@ -38,6 +47,7 @@ const run = document.querySelector('#run');
 const status = document.querySelector('#status');
 const activity = document.querySelector('#activity');
 const answer = document.querySelector('#answer');
+const modelCalls = document.querySelector('#model-calls');
 const repo = document.querySelector('#repo');
 const browse = document.querySelector('#browse');
 const headers = {'Content-Type': 'application/json',
@@ -61,19 +71,81 @@ form.addEventListener('submit', async event => {
   run.disabled = browse.disabled = repo.disabled = true;
   status.textContent = 'Running…';
   activity.textContent = '';
+  modelCalls.textContent = '';
+  const calls = new Map();
+  let previousMessages = new Set();
+  const pendingTools = new Map();
+  function detail(parent, title, value, open=false) {
+    const node = document.createElement('details');
+    node.open = open;
+    const summary = document.createElement('summary');
+    summary.textContent = title;
+    const pre = document.createElement('pre');
+    pre.textContent = typeof value === 'string' ? value :
+      JSON.stringify(value, null, 2);
+    node.append(summary, pre);
+    parent.append(node);
+    return node;
+  }
+  function modelEvent(item) {
+    const v = item.value;
+    if (item.label === 'LLM INPUT') {
+      const section = document.createElement('section');
+      section.className = 'model-call';
+      const heading = document.createElement('h3');
+      heading.textContent = 'LLM call ' + v.call;
+      section.append(heading);
+      const repeated = v.messages.filter(m =>
+        previousMessages.has(JSON.stringify(m))).length;
+      const info = document.createElement('p');
+      info.textContent = v.messages.length + ' input messages · ' + repeated +
+        ' unchanged from the previous call';
+      section.append(info);
+      detail(section, 'System instruction', v.system_instruction);
+      detail(section, 'Available tools', v.tools);
+      v.messages.forEach((m, index) => {
+        const reused = previousMessages.has(JSON.stringify(m));
+        const parts = m.parts || [];
+        const names = parts.map(p => p.function_call?.name ||
+          p.function_response?.name).filter(Boolean).join(', ');
+        const label = 'Input ' + (index + 1) + ' · ' + m.role +
+          (names ? ' · ' + names : '') + (reused ? ' · sent again' : ' · new');
+        detail(section, label, m).className = reused ? 'reused' : '';
+      });
+      previousMessages = new Set(v.messages.map(m => JSON.stringify(m)));
+      calls.set(v.call, section);
+      modelCalls.append(section);
+    } else {
+      detail(calls.get(v.call) || modelCalls, 'Output from LLM call ' + v.call,
+        v, true);
+    }
+  }
   answer.textContent = 'Waiting for the agent…';
   let finished = false;
   function display(line) {
     if (!line.trim()) return;
     const item = JSON.parse(line);
-    if (item.label === 'FINAL ANSWER') answer.textContent = item.value;
+    if (item.label.startsWith('LLM ')) modelEvent(item);
+    else if (item.label.startsWith('TOOL CALL: ')) {
+      const name = item.label.slice(11);
+      const tool = document.createElement('li');
+      detail(tool, name, item.value);
+      activity.append(tool);
+      if (!pendingTools.has(name)) pendingTools.set(name, []);
+      pendingTools.get(name).push(tool);
+    } else if (item.label.startsWith('TOOL RESULT: ')) {
+      const name = item.label.slice(13);
+      const tool = pendingTools.get(name)?.shift();
+      detail(tool || activity, 'Result: ' + name, item.value);
+    } else if (item.label === 'FINAL ANSWER') answer.textContent = item.value;
     else if (item.label === 'STATUS') {
       status.textContent = item.value;
       finished = true;
       if (item.value !== 'completed') answer.textContent = 'Review incomplete.';
     } else {
-      activity.textContent += item.label + '\n' +
-        JSON.stringify(item.value, null, 2) + '\n\n';
+      const line = document.createElement('li');
+      line.textContent = item.label + ': ' + JSON.stringify(item.value);
+      activity.append(line);
     }
   }
   try {

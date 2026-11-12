@@ -83,6 +83,14 @@ class WebTests(unittest.TestCase):
             self.assertEqual(events[-1], {'label': 'STATUS', 'value': 'completed'})
             self.assertEqual(sum(e['label'].startswith('TOOL CALL')
                                  for e in events), 3)
+            inputs = [e['value'] for e in events if e['label'] == 'LLM INPUT']
+            outputs = [e['value'] for e in events if e['label'] == 'LLM OUTPUT']
+            self.assertEqual(len(inputs), 4)
+            self.assertEqual(len(outputs), 4)
+            self.assertEqual(inputs[1]['messages'][0], inputs[0]['messages'][0])
+            self.assertTrue(any('function_response' in p
+                for m in inputs[1]['messages'] for p in m['parts']))
+            self.assertNotIn('test-only', json.dumps(inputs))
             answer = next(e['value'] for e in events
                           if e['label'] == 'FINAL ANSWER')
             self.assertIn('return lookup(db, name)', answer)

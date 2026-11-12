@@ -97,3 +97,9 @@ Keep it local; it is not a production multi-user web service.
 
 The proposed evaluation experiment is in [evals/PLAN.md](evals/PLAN.md). It is
 a plan for review; no evaluation results or performance gains are claimed.
+
+The live UI shows the ordered tool calls and expandable inputs and outputs for
+each LLM call. Messages marked **sent again** are unchanged conversation
+history carried into the next request, including previous tool results.
+The trace shows visible messages and tool schemas, not API credentials or
+private model reasoning. Refreshing the page clears the displayed run.

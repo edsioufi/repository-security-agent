@@ -13,6 +13,7 @@ import sys
 from agent import make_agent
 from cli import QUESTION, review
 from tools import RepositoryTools
+from model_trace import attach_trace
 
 
 def choose_folder():
@@ -131,6 +132,7 @@ def serve(repo=None, model_name="gemini-3.5-flash-lite", port=8767):
                 self.wfile.write((event + "\n").encode())
                 self.wfile.flush()
 
+            attach_trace(agent, emit)
             try:
                 asyncio.run(review(agent, QUESTION, emit=emit))
             except (BrokenPipeError, ConnectionResetError):
