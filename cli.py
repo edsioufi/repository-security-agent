@@ -12,7 +12,11 @@ from google.genai import types
 from agent import make_agent
 from tools import RepositoryTools
 
-QUESTION = "Where does user input go, and what security issues are supported?"
+QUESTION = (
+    "Review this repository for security vulnerabilities. "
+    "Report findings with source evidence, suggested fixes, "
+    "and the limitations of your review."
+)
 
 
 def show(label, value):
