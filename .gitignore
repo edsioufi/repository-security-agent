@@ -10,3 +10,5 @@ recordings/
 .DS_Store
 evals/fixtures/
 evals/runs/
+evals/crossfile/fixtures/
+evals/crossfile/runs/
