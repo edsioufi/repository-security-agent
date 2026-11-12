@@ -72,8 +72,6 @@ There is no shell-execution tool and no automatic writing or publishing.
 .venv/bin/python -m unittest discover -s tests -v
 ```
 
-This repository is private during instructor review. Public release is a
-separate step after approval.
 
 ## Branches
 
