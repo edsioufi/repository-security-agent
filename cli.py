@@ -22,7 +22,7 @@ def show(label, value):
     print(value, flush=True)
 
 
-async def review(agent, question, max_calls=8):
+async def review(agent, question, max_calls=8, emit=show):
     runner = InMemoryRunner(agent=agent, app_name="code_reviewer")
     completed = False
     failed = False
@@ -40,28 +40,28 @@ async def review(agent, question, max_calls=8):
                 run_config=RunConfig(max_llm_calls=max_calls),
             ):
                 for call in event.get_function_calls():
-                    show(f"TOOL CALL: {call.name}", call.args)
+                    emit(f"TOOL CALL: {call.name}", call.args)
                 for result in event.get_function_responses():
-                    show(f"TOOL RESULT: {result.name}", result.response)
+                    emit(f"TOOL RESULT: {result.name}", result.response)
                 if event.error_code:
                     failed = True
-                    show("ERROR", event.error_code)
+                    emit("ERROR", event.error_code)
                 if event.is_final_response() and event.content:
                     answer = "\n".join(
                         p.text for p in event.content.parts or []
                         if p.text and not p.thought
                     ).strip()
                     if answer:
-                        show("FINAL ANSWER", answer)
+                        emit("FINAL ANSWER", answer)
                         completed = True
     except Exception as error:
         # Avoid echoing provider messages that could contain credentials.
         failed = True
-        show("ERROR", f"{type(error).__name__}: review did not complete.")
+        emit("ERROR", f"{type(error).__name__}: review did not complete.")
     finally:
         await runner.close()
     success = completed and not failed
-    show("STATUS", "completed" if success else "incomplete")
+    emit("STATUS", "completed" if success else "incomplete")
     return success
 
 

@@ -1,0 +1,61 @@
+import http.client
+import json
+from pathlib import Path
+import re
+import socket
+import subprocess
+import sys
+import time
+import unittest
+
+
+class WebTests(unittest.TestCase):
+    def test_offline_stream_and_request_boundary(self):
+        with socket.socket() as probe:
+            probe.bind(('127.0.0.1', 0))
+            port = probe.getsockname()[1]
+        process = subprocess.Popen(
+            [sys.executable, 'web.py', '--offline', '--port', str(port)],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
+        try:
+            for _ in range(60):
+                try:
+                    conn = http.client.HTTPConnection('127.0.0.1', port)
+                    conn.request('GET', '/')
+                    response = conn.getresponse()
+                    page = response.read().decode()
+                    break
+                except ConnectionError:
+                    time.sleep(.1)
+            else:
+                self.fail('Web server did not start')
+            self.assertEqual(response.status, 200)
+            self.assertIn('Offline scripted demonstration', page)
+            token = re.search("'X-Review-Token': '([^']+)'", page)[1]
+            headers = {
+                'Content-Type': 'application/json',
+                'Origin': f'http://127.0.0.1:{port}',
+                'X-Review-Token': token,
+            }
+            conn = http.client.HTTPConnection('127.0.0.1', port, timeout=15)
+            conn.request('POST', '/review', json.dumps({'question': 'Review'}),
+                         headers | {'Origin': 'https://outside.example'})
+            denied = conn.getresponse()
+            self.assertEqual(denied.status, 403)
+            denied.read()
+            conn = http.client.HTTPConnection('127.0.0.1', port, timeout=15)
+            conn.request('POST', '/review', json.dumps({'question': 'Review'}),
+                         headers)
+            response = conn.getresponse()
+            self.assertEqual(response.status, 200)
+            events = [json.loads(s) for s in response.read().decode().splitlines()]
+            self.assertEqual(events[-1], {'label': 'STATUS', 'value': 'completed'})
+            self.assertEqual(sum(e['label'].startswith('TOOL CALL')
+                                 for e in events), 3)
+            answer = next(e['value'] for e in events
+                          if e['label'] == 'FINAL ANSWER')
+            self.assertIn('return lookup(db, name)', answer)
+        finally:
+            process.terminate()
+            process.wait(timeout=5)
