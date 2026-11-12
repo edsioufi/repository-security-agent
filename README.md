@@ -92,5 +92,6 @@ account system, upload endpoint, or deployment configuration. It binds only to
 loopback and checks request origin, host, and a per-process request token.
 Keep it local; it is not a production multi-user web service.
 
-The proposed evaluation experiment is in [evals/PLAN.md](evals/PLAN.md). It is
-a plan for review; no evaluation results or performance gains are claimed.
+The evals branch adds a validated report tool and a reproducible source-review
+comparison. See [evals/README.md](evals/README.md) for the protocol and commands.
+The CLI and web UI keep the original three exploration tools.

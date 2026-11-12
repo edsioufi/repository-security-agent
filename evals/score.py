@@ -48,8 +48,41 @@ def summarize(batch, attempts=2):
                 if run:
                     row.update(model_calls=min(run.get("model_calls", 0), run.get("max_model_calls", 8)),
                                seconds=run.get("latency_seconds", 0))
+                if run:
+                    usages = [u for u in run.get("usage", []) if u]
+                    row["input_tokens"] = sum(u.get("prompt_token_count") or 0 for u in usages)
+                    row["output_tokens"] = sum((u.get("candidates_token_count") or 0)
+                                              + (u.get("thoughts_token_count") or 0)
+                                              for u in usages)
+                    row["unknown_usage_calls"] = max(
+                        0, row["model_calls"] - len(usages))
+                    row["tool_calls"] = sum(
+                        bool(p.get("function_call"))
+                        for e in run.get("trace", [])
+                        for p in (e.get("content") or {}).get("parts", []))
                 rows.append(row)
-    summary = {"totals": dict(totals), "rows": rows}
+    metrics = {}
+    for group, counts in totals.items():
+        selected = [r for r in rows if r["split"] + "/" + r["arm"] == group]
+        tp, fp, fn, tn = [counts.get(k, 0) for k in ("TP", "FP", "FN", "TN")]
+        positive = sum(r["expected"] for r in selected)
+        inp = sum(r.get("input_tokens", 0) for r in selected)
+        out = sum(r.get("output_tokens", 0) for r in selected)
+        metrics[group] = {
+            "planned": len(selected), "correct_target_decisions": tp + tn,
+            "completed": tp + fp + fn + tn,
+            "precision_completed": tp / (tp + fp) if tp + fp else None,
+            "recall_completed": tp / (tp + fn) if tp + fn else None,
+            "detected_per_planned_positive": tp / positive if positive else None,
+            "model_calls": sum(r.get("model_calls", 0) for r in selected),
+            "tool_calls": sum(r.get("tool_calls", 0) for r in selected),
+            "latency_seconds": round(sum(r.get("seconds", 0) for r in selected), 3),
+            "input_tokens": inp, "output_tokens_including_thoughts": out,
+            "known_usage_estimated_usd": (inp * .30 + out * 2.50) / 1_000_000,
+            "unknown_usage_calls": sum(r.get("unknown_usage_calls", 0) for r in selected),
+            "other_findings": sum(r["other_findings"] for r in selected),
+        }
+    summary = {"totals": dict(totals), "metrics": metrics, "rows": rows}
     (batch / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps(summary["totals"], indent=2))
     return summary

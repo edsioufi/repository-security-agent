@@ -44,6 +44,8 @@ multiple runner processes concurrently against the same ledger.
 .venv/bin/python -m evals.run --batch comparison --split holdout
 .venv/bin/python -m evals.run --batch comparison --split dev --arms single
 .venv/bin/python -m evals.run --batch comparison --split holdout --arms single
+# Repeat all held-out agent pairs, without changing their prompts:
+.venv/bin/python -m evals.run --batch comparison --split holdout --attempts 2
 ~~~
 
 Existing attempt files are never replaced, including failed attempts. Request
@@ -70,7 +72,28 @@ vulnerability. Errors and missing attempts are incomplete, never true negatives.
 .venv/bin/python -m evals.score evals/runs/comparison --attempts 1
 ~~~
 
+For the completed comparison with repeated held-out agent runs, use
+`--attempts 2`. Development and single-call runs remain one attempt each.
+The [recorded results](results/comparison/README.md) include an offline HTML
+viewer and all 48 sanitized attempts.
+
 Reports, tool traces, usage and failures are kept under ignored evals/runs/.
 After reviewing a completed comparison, publish a curated, sanitized result
 bundle with all attempts included and clear limitations. Never promote a
 scripted offline run as a live model result.
+
+## Recorded execution
+
+The completed comparison uses one development attempt per arm, two held-out
+attempts for each agent arm, and one held-out attempt for the single-call
+control: 48 attempts total. Repeats were declared before they ran, and neither
+agent prompt was changed based on held-out results.
+
+Two original single-call runs recorded two pre-model callbacks even though
+ADK blocked the second provider request. Published model-call counts are
+corrected to one, with the original callback counts and correction note
+retained. Their incomplete statuses are unchanged. The ledger conservatively
+retains the unused reservations; reported token costs are calculated separately.
+
+The table scores target-CWE case decisions, not the quality of every sentence.
+The source audit records impact overstatements and out-of-category findings.

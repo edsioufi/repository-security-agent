@@ -1,0 +1,325 @@
+{
+  "commit": "f1291485808b66e20ddb6b01b10dc71b3df8c8ba",
+  "source": "https://github.com/OWASP-Benchmark/BenchmarkPython",
+  "labels_sha256": "6396f37c97cfd0c018db3d8750095ce6c678a083f83620cfb3e88fe27a46bb0c",
+  "transformations": [
+    "Blank module header and comments; preserve line numbers",
+    "Rename benchmark identifiers to endpoint",
+    "Neutralize category-bearing route/template names and error text",
+    "No data-flow or sink expressions changed"
+  ],
+  "cases": [
+    {
+      "id": "case-01",
+      "split": "dev",
+      "upstream": "BenchmarkTest00099",
+      "category": "CWE-89",
+      "vulnerable": true,
+      "files": {
+        "app.py": "7a7234723ac5fa7ec61b0d0624784da04521b9d9bfe02fe934ce51a2295bfc21",
+        "helpers/db_sqlite.py": "24f852d86bce0ccb0752202ee7736e0c60ad21b637ac5032e001cf888f9d6283",
+        "helpers/utils.py": "4c3cc220911425b2ecdab01ab6aa50f3029c363168e7c30d720841b7bdd9c7b9"
+      },
+      "provenance": {
+        "app.py": {
+          "upstream_path": "testcode/BenchmarkTest00099.py",
+          "upstream_sha256": "70a1ae553181b4ea78e6dec87c0c7ca73fdf1a9babbfeec062ea3465a8e64f8c",
+          "line_mapping": "identity"
+        },
+        "helpers/db_sqlite.py": {
+          "upstream_path": "helpers/db_sqlite.py",
+          "upstream_sha256": "24f852d86bce0ccb0752202ee7736e0c60ad21b637ac5032e001cf888f9d6283",
+          "line_mapping": "identity"
+        },
+        "helpers/utils.py": {
+          "upstream_path": "helpers/utils.py",
+          "upstream_sha256": "899b04b2610fe168cecf618ee12c9f318dffaeb0a7b4e59f27bcd629c5795834",
+          "line_mapping": "identity"
+        }
+      }
+    },
+    {
+      "id": "case-02",
+      "split": "dev",
+      "upstream": "BenchmarkTest00011",
+      "category": "CWE-89",
+      "vulnerable": false,
+      "files": {
+        "app.py": "5d78f9a93a380649c9a67b9ca88d79fc68d41b9527b8dd6096bd2ee8ddd8f3cb",
+        "helpers/db_sqlite.py": "24f852d86bce0ccb0752202ee7736e0c60ad21b637ac5032e001cf888f9d6283",
+        "helpers/utils.py": "4c3cc220911425b2ecdab01ab6aa50f3029c363168e7c30d720841b7bdd9c7b9"
+      },
+      "provenance": {
+        "app.py": {
+          "upstream_path": "testcode/BenchmarkTest00011.py",
+          "upstream_sha256": "89c30b95eb2bfd6978be29cd0a7f883f006606ce5c958f0747e25e551ac2a7d1",
+          "line_mapping": "identity"
+        },
+        "helpers/db_sqlite.py": {
+          "upstream_path": "helpers/db_sqlite.py",
+          "upstream_sha256": "24f852d86bce0ccb0752202ee7736e0c60ad21b637ac5032e001cf888f9d6283",
+          "line_mapping": "identity"
+        },
+        "helpers/utils.py": {
+          "upstream_path": "helpers/utils.py",
+          "upstream_sha256": "899b04b2610fe168cecf618ee12c9f318dffaeb0a7b4e59f27bcd629c5795834",
+          "line_mapping": "identity"
+        }
+      }
+    },
+    {
+      "id": "case-03",
+      "split": "dev",
+      "upstream": "BenchmarkTest00165",
+      "category": "CWE-78",
+      "vulnerable": true,
+      "files": {
+        "app.py": "014d9d743fd686333528e588d6232f4c6c8bd4d291b5b8989fdc51f0acb4966d",
+        "helpers/utils.py": "4c3cc220911425b2ecdab01ab6aa50f3029c363168e7c30d720841b7bdd9c7b9"
+      },
+      "provenance": {
+        "app.py": {
+          "upstream_path": "testcode/BenchmarkTest00165.py",
+          "upstream_sha256": "11ed0026305523bca64fc4b16190f59e84074a9ff266a64c884ec9b2839457fb",
+          "line_mapping": "identity"
+        },
+        "helpers/utils.py": {
+          "upstream_path": "helpers/utils.py",
+          "upstream_sha256": "899b04b2610fe168cecf618ee12c9f318dffaeb0a7b4e59f27bcd629c5795834",
+          "line_mapping": "identity"
+        }
+      }
+    },
+    {
+      "id": "case-04",
+      "split": "dev",
+      "upstream": "BenchmarkTest00350",
+      "category": "CWE-78",
+      "vulnerable": false,
+      "files": {
+        "app.py": "58fe4bb5b5bb83d2f1540c43ada0d10375b261d1cd9052bdbc86c1eab8ef24b9",
+        "helpers/utils.py": "4c3cc220911425b2ecdab01ab6aa50f3029c363168e7c30d720841b7bdd9c7b9",
+        "helpers/separate_request.py": "89db71030f136a205b52ea1aecec7ffb596efca2721ef91522eea4b2075814a4"
+      },
+      "provenance": {
+        "app.py": {
+          "upstream_path": "testcode/BenchmarkTest00350.py",
+          "upstream_sha256": "52eeea7199c73ff35fdb3e260ed647337df16f962f40a7e5b2e2854eed3c6476",
+          "line_mapping": "identity"
+        },
+        "helpers/utils.py": {
+          "upstream_path": "helpers/utils.py",
+          "upstream_sha256": "899b04b2610fe168cecf618ee12c9f318dffaeb0a7b4e59f27bcd629c5795834",
+          "line_mapping": "identity"
+        },
+        "helpers/separate_request.py": {
+          "upstream_path": "helpers/separate_request.py",
+          "upstream_sha256": "89db71030f136a205b52ea1aecec7ffb596efca2721ef91522eea4b2075814a4",
+          "line_mapping": "identity"
+        }
+      }
+    },
+    {
+      "id": "case-05",
+      "split": "dev",
+      "upstream": "BenchmarkTest00001",
+      "category": "CWE-22",
+      "vulnerable": true,
+      "files": {
+        "app.py": "8b1a18de4ce4cccbbe1ef599be764a2ac5df7851b4529b9445d3b87eccafb64d",
+        "helpers/utils.py": "4c3cc220911425b2ecdab01ab6aa50f3029c363168e7c30d720841b7bdd9c7b9"
+      },
+      "provenance": {
+        "app.py": {
+          "upstream_path": "testcode/BenchmarkTest00001.py",
+          "upstream_sha256": "be0322edf87adb01228dbf054908e12ce34612e02b722e14384ff5eecb967df6",
+          "line_mapping": "identity"
+        },
+        "helpers/utils.py": {
+          "upstream_path": "helpers/utils.py",
+          "upstream_sha256": "899b04b2610fe168cecf618ee12c9f318dffaeb0a7b4e59f27bcd629c5795834",
+          "line_mapping": "identity"
+        }
+      }
+    },
+    {
+      "id": "case-06",
+      "split": "dev",
+      "upstream": "BenchmarkTest00004",
+      "category": "CWE-22",
+      "vulnerable": false,
+      "files": {
+        "app.py": "e65f19fbec27c7667f6d991068950ef4bf24a85ada1ede8531fe07a98e3cd8b7",
+        "helpers/utils.py": "4c3cc220911425b2ecdab01ab6aa50f3029c363168e7c30d720841b7bdd9c7b9"
+      },
+      "provenance": {
+        "app.py": {
+          "upstream_path": "testcode/BenchmarkTest00004.py",
+          "upstream_sha256": "3c6222deb60ce9a389a1cf19222ba5dc246a40b52d640e3f41a1954aa8ee777f",
+          "line_mapping": "identity"
+        },
+        "helpers/utils.py": {
+          "upstream_path": "helpers/utils.py",
+          "upstream_sha256": "899b04b2610fe168cecf618ee12c9f318dffaeb0a7b4e59f27bcd629c5795834",
+          "line_mapping": "identity"
+        }
+      }
+    },
+    {
+      "id": "case-07",
+      "split": "holdout",
+      "upstream": "BenchmarkTest00454",
+      "category": "CWE-89",
+      "vulnerable": true,
+      "files": {
+        "app.py": "c8c2919b543d4b724e25b195e28af17d365cce2025010b05fdf9e3144b49f709",
+        "helpers/db_sqlite.py": "24f852d86bce0ccb0752202ee7736e0c60ad21b637ac5032e001cf888f9d6283",
+        "helpers/utils.py": "4c3cc220911425b2ecdab01ab6aa50f3029c363168e7c30d720841b7bdd9c7b9"
+      },
+      "provenance": {
+        "app.py": {
+          "upstream_path": "testcode/BenchmarkTest00454.py",
+          "upstream_sha256": "855ea60577a8728f5b52c6fc2f68ba449888f50538ab3a7e151ce96a9b3c754d",
+          "line_mapping": "identity"
+        },
+        "helpers/db_sqlite.py": {
+          "upstream_path": "helpers/db_sqlite.py",
+          "upstream_sha256": "24f852d86bce0ccb0752202ee7736e0c60ad21b637ac5032e001cf888f9d6283",
+          "line_mapping": "identity"
+        },
+        "helpers/utils.py": {
+          "upstream_path": "helpers/utils.py",
+          "upstream_sha256": "899b04b2610fe168cecf618ee12c9f318dffaeb0a7b4e59f27bcd629c5795834",
+          "line_mapping": "identity"
+        }
+      }
+    },
+    {
+      "id": "case-08",
+      "split": "holdout",
+      "upstream": "BenchmarkTest00755",
+      "category": "CWE-89",
+      "vulnerable": false,
+      "files": {
+        "app.py": "22fa302f9a6979699499fd466807110545e8582027f40e85e70a39b55b92afd3",
+        "helpers/db_sqlite.py": "24f852d86bce0ccb0752202ee7736e0c60ad21b637ac5032e001cf888f9d6283",
+        "helpers/utils.py": "4c3cc220911425b2ecdab01ab6aa50f3029c363168e7c30d720841b7bdd9c7b9"
+      },
+      "provenance": {
+        "app.py": {
+          "upstream_path": "testcode/BenchmarkTest00755.py",
+          "upstream_sha256": "019bea7eb9b7edddec2bf8adbcd2fa0a8fd88f14399f0236533d8feee0dd3bdd",
+          "line_mapping": "identity"
+        },
+        "helpers/db_sqlite.py": {
+          "upstream_path": "helpers/db_sqlite.py",
+          "upstream_sha256": "24f852d86bce0ccb0752202ee7736e0c60ad21b637ac5032e001cf888f9d6283",
+          "line_mapping": "identity"
+        },
+        "helpers/utils.py": {
+          "upstream_path": "helpers/utils.py",
+          "upstream_sha256": "899b04b2610fe168cecf618ee12c9f318dffaeb0a7b4e59f27bcd629c5795834",
+          "line_mapping": "identity"
+        }
+      }
+    },
+    {
+      "id": "case-09",
+      "split": "holdout",
+      "upstream": "BenchmarkTest00899",
+      "category": "CWE-78",
+      "vulnerable": true,
+      "files": {
+        "app.py": "f61c7a4bfa40262a2d58a46397528b3eff5cfd945b693c68d7b464a85cd61cc9",
+        "helpers/utils.py": "4c3cc220911425b2ecdab01ab6aa50f3029c363168e7c30d720841b7bdd9c7b9",
+        "helpers/separate_request.py": "89db71030f136a205b52ea1aecec7ffb596efca2721ef91522eea4b2075814a4"
+      },
+      "provenance": {
+        "app.py": {
+          "upstream_path": "testcode/BenchmarkTest00899.py",
+          "upstream_sha256": "3011b4f24753f7ff6cbe922efbdffe2d10fcb5f5a981d842143f68e3f3ac22bf",
+          "line_mapping": "identity"
+        },
+        "helpers/utils.py": {
+          "upstream_path": "helpers/utils.py",
+          "upstream_sha256": "899b04b2610fe168cecf618ee12c9f318dffaeb0a7b4e59f27bcd629c5795834",
+          "line_mapping": "identity"
+        },
+        "helpers/separate_request.py": {
+          "upstream_path": "helpers/separate_request.py",
+          "upstream_sha256": "89db71030f136a205b52ea1aecec7ffb596efca2721ef91522eea4b2075814a4",
+          "line_mapping": "identity"
+        }
+      }
+    },
+    {
+      "id": "case-10",
+      "split": "holdout",
+      "upstream": "BenchmarkTest01097",
+      "category": "CWE-78",
+      "vulnerable": false,
+      "files": {
+        "app.py": "6c05112b582b98f7dad597f3b4e5cd4451c6eb39d3c927a6a2f0da85b6bdb188",
+        "helpers/utils.py": "4c3cc220911425b2ecdab01ab6aa50f3029c363168e7c30d720841b7bdd9c7b9"
+      },
+      "provenance": {
+        "app.py": {
+          "upstream_path": "testcode/BenchmarkTest01097.py",
+          "upstream_sha256": "09cffddc1f408d4fd05026a71f8c6a1179c1fd0e42c7cb3010e83b53b58908d9",
+          "line_mapping": "identity"
+        },
+        "helpers/utils.py": {
+          "upstream_path": "helpers/utils.py",
+          "upstream_sha256": "899b04b2610fe168cecf618ee12c9f318dffaeb0a7b4e59f27bcd629c5795834",
+          "line_mapping": "identity"
+        }
+      }
+    },
+    {
+      "id": "case-11",
+      "split": "holdout",
+      "upstream": "BenchmarkTest00087",
+      "category": "CWE-22",
+      "vulnerable": true,
+      "files": {
+        "app.py": "93a50a042af3beb9b4dfabb07062c3af4117d9ff1c767942fb8306db3d1913d9",
+        "helpers/utils.py": "4c3cc220911425b2ecdab01ab6aa50f3029c363168e7c30d720841b7bdd9c7b9"
+      },
+      "provenance": {
+        "app.py": {
+          "upstream_path": "testcode/BenchmarkTest00087.py",
+          "upstream_sha256": "0f0695e10183d23dcf8b320690761a5efb29a48695ccb15d8de2598d68a6d0a7",
+          "line_mapping": "identity"
+        },
+        "helpers/utils.py": {
+          "upstream_path": "helpers/utils.py",
+          "upstream_sha256": "899b04b2610fe168cecf618ee12c9f318dffaeb0a7b4e59f27bcd629c5795834",
+          "line_mapping": "identity"
+        }
+      }
+    },
+    {
+      "id": "case-12",
+      "split": "holdout",
+      "upstream": "BenchmarkTest00088",
+      "category": "CWE-22",
+      "vulnerable": false,
+      "files": {
+        "app.py": "f8ad7d8296d3766e847ff4a032fbc2c3392f9d05cacc455cb22f02bc5348076e",
+        "helpers/utils.py": "4c3cc220911425b2ecdab01ab6aa50f3029c363168e7c30d720841b7bdd9c7b9"
+      },
+      "provenance": {
+        "app.py": {
+          "upstream_path": "testcode/BenchmarkTest00088.py",
+          "upstream_sha256": "22d296709b4a8752faa68fe8dbb81a4ad4c4395c7dd608513f3a3244cb7cd156",
+          "line_mapping": "identity"
+        },
+        "helpers/utils.py": {
+          "upstream_path": "helpers/utils.py",
+          "upstream_sha256": "899b04b2610fe168cecf618ee12c9f318dffaeb0a7b4e59f27bcd629c5795834",
+          "line_mapping": "identity"
+        }
+      }
+    }
+  ]
+}

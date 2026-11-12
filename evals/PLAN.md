@@ -1,7 +1,7 @@
 # Evaluation proposal
 
 Status: implementation approved. Harness and report tool are on evals.
-Implement after review; keep main's small CLI unchanged.
+The implementation is isolated on evals; main's small CLI stays unchanged.
 
 ## Question
 

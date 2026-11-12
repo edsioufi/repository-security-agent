@@ -39,6 +39,10 @@ def publish(batch, output):
             if event.get("error_code"):
                 events.append({"type": "Error", "data": event["error_code"]})
         record["trace"] = events
+        record["source_files"] = {
+            p.relative_to(ROOT / "fixtures" / record["case"]).as_posix(): p.read_text()
+            for p in (ROOT / "fixtures" / record["case"]).rglob("*.py")
+        }
         runs.append(record)
         (output / path.name).write_text(json.dumps(record, indent=2) + "\n")
     for filename in ("summary.json", "audits.json"):
@@ -63,7 +67,7 @@ details {margin:12px 0} summary {cursor:pointer;font-weight:600}
 .notice {padding:16px;background:#fff1d6}
 </style>
 <h1>Does more investigation improve source review?</h1>
-<p>Same model. Twelve source fixtures. All 48 recorded attempts are included.
+<p>Same model. Twelve source fixtures. All __RUN_COUNT__ recorded attempts are included.
 Six development cases and six held out. Agent arms repeat held-out cases twice;
 the single-call control runs once. These are saved live-model results.</p>
 <p class="notice">This is a small exploratory comparison on public synthetic
@@ -104,6 +108,12 @@ r.latency_seconds+' seconds · '+r.model;result.append(p);
 const report=document.createElement('pre');
 report.textContent=JSON.stringify(r.report||{error:r.error},null,2);
 result.append(report);
+const source=document.createElement('details');
+const label=document.createElement('summary');label.textContent='Exact source fixture';
+source.append(label);
+for(const [name,text] of Object.entries(r.source_files)){
+const pre=document.createElement('pre');pre.textContent=name+'\\n'+text;source.append(pre)}
+result.append(source);
 const trace=document.querySelector('#trace');trace.replaceChildren();
 for(const [i,e] of r.trace.entries()){
 const detail=document.createElement('details');
@@ -115,7 +125,7 @@ detail.append(title,body);trace.append(detail)}
 }
 select.addEventListener('change',show);show();
 </script></html>"""
-    (output / "index.html").write_text(template.replace("__DATA__", data))
+    (output / "index.html").write_text(template.replace("__DATA__", data).replace("__RUN_COUNT__", str(len(runs))))
     print(output / "index.html")
 
 

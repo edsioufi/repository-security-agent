@@ -1,0 +1,227 @@
+{
+  "case-05-baseline-1": {
+    "valid_target_finding": true,
+    "rationale": "Cookie value is concatenated into the path opened at app.py:47, without confinement.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-03-baseline-1": {
+    "valid_target_finding": true,
+    "rationale": "List rotation preserves form value; explicit sh -c at app.py:53-57 interprets it.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-04-baseline-1": {
+    "valid_target_finding": false,
+    "rationale": "app.py:44 overwrites bar with constant keyA. The context report itself says no injection; listing it as a finding is a reporting false positive.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-01-baseline-1": {
+    "valid_target_finding": true,
+    "rationale": "Form value survives ConfigParser keyB into interpolated SQL at app.py:46-49.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-02-context-1": {
+    "valid_target_finding": false,
+    "rationale": "Parameter binding at app.py:47-50 prevents the target SQL injection.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-05-context-1": {
+    "valid_target_finding": true,
+    "rationale": "Cookie value is concatenated into the path opened at app.py:47, without confinement.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-04-context-1": {
+    "valid_target_finding": false,
+    "rationale": "app.py:44 overwrites bar with constant keyA. The context report itself says no injection; listing it as a finding is a reporting false positive.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-03-context-1": {
+    "valid_target_finding": true,
+    "rationale": "List rotation preserves form value; explicit sh -c at app.py:53-57 interprets it.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-06-baseline-1": {
+    "valid_target_finding": false,
+    "rationale": "Constant condition 7*18+106 > 200 selects a fixed filename at app.py:43.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-01-context-1": {
+    "valid_target_finding": true,
+    "rationale": "Form value survives ConfigParser keyB into interpolated SQL at app.py:46-49.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-06-context-1": {
+    "valid_target_finding": false,
+    "rationale": "Constant condition 7*18+106 > 200 selects a fixed filename at app.py:43.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-12-baseline-1": {
+    "valid_target_finding": false,
+    "rationale": "possible[1] is B, so app.py:41-42 selects constant bob; no attacker-controlled path.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-10-context-1": {
+    "valid_target_finding": false,
+    "rationale": "7*42-86 equals 208, so app.py:38-39 always replaces input with a constant. Baseline overlooks this and makes a false positive.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-09-baseline-1": {
+    "valid_target_finding": true,
+    "rationale": "Constant match branch A preserves query input; sh -c interprets it at app.py:60-64.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-10-baseline-1": {
+    "valid_target_finding": false,
+    "rationale": "7*42-86 equals 208, so app.py:38-39 always replaces input with a constant. Baseline overlooks this and makes a false positive.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-11-context-1": {
+    "valid_target_finding": true,
+    "rationale": "ConfigParser keyB preserves form input into an unconstrained path at app.py:47-49. os.path.exists reveals existence, not file contents; both explanations overstate the impact.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-08-baseline-1": {
+    "valid_target_finding": false,
+    "rationale": "Query input is bound as a SQL parameter at app.py:42-45.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-09-context-1": {
+    "valid_target_finding": true,
+    "rationale": "Constant match branch A preserves query input; sh -c interprets it at app.py:60-64.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-11-baseline-1": {
+    "valid_target_finding": true,
+    "rationale": "ConfigParser keyB preserves form input into an unconstrained path at app.py:47-49. os.path.exists reveals existence, not file contents; both explanations overstate the impact.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-07-baseline-1": {
+    "valid_target_finding": true,
+    "rationale": "Header survives base64 round-trip into SQL interpolation, app.py:31-44. The context arm also reports CWE-79, outside the labeled target; that extra is not scored or endorsed.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-12-context-1": {
+    "valid_target_finding": false,
+    "rationale": "possible[1] is B, so app.py:41-42 selects constant bob; no attacker-controlled path.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-07-context-1": {
+    "valid_target_finding": true,
+    "rationale": "Header survives base64 round-trip into SQL interpolation, app.py:31-44. The context arm also reports CWE-79, outside the labeled target; that extra is not scored or endorsed.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-08-context-1": {
+    "valid_target_finding": false,
+    "rationale": "Query input is bound as a SQL parameter at app.py:42-45.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-08-single-1": {
+    "valid_target_finding": false,
+    "rationale": "Query input is bound as a SQL parameter at app.py:42-45.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-11-single-1": {
+    "valid_target_finding": true,
+    "rationale": "ConfigParser keyB preserves form input into an unconstrained path at app.py:47-49. os.path.exists reveals existence, not file contents; both explanations overstate the impact.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-02-single-1": {
+    "valid_target_finding": false,
+    "rationale": "Parameter binding at app.py:47-50 prevents the target SQL injection.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-05-single-1": {
+    "valid_target_finding": true,
+    "rationale": "Cookie value is concatenated into the path opened at app.py:47, without confinement.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-12-single-1": {
+    "valid_target_finding": false,
+    "rationale": "possible[1] is B, so app.py:41-42 selects constant bob; no attacker-controlled path.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-01-single-1": {
+    "valid_target_finding": true,
+    "rationale": "Form value survives ConfigParser keyB into interpolated SQL at app.py:46-49.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-04-single-1": {
+    "valid_target_finding": false,
+    "rationale": "app.py:44 overwrites input with keyA constant. Single-call explanation correctly says no injection, but places this in findings: reporting false positive.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-07-single-1": {
+    "valid_target_finding": true,
+    "rationale": "Header survives base64 round-trip into SQL interpolation, app.py:31-44. The context arm also reports CWE-79, outside the labeled target; that extra is not scored or endorsed.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-10-single-1": {
+    "valid_target_finding": false,
+    "rationale": "app.py:38-39 always selects constant. Single-call explanation recognizes this yet submits a CWE-78 finding: reporting false positive.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-09-single-1": {
+    "valid_target_finding": true,
+    "rationale": "Constant match branch A preserves query input; sh -c interprets it at app.py:60-64.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-08-context-2": {
+    "valid_target_finding": false,
+    "rationale": "Query input is bound as a SQL parameter at app.py:42-45.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-07-context-2": {
+    "valid_target_finding": true,
+    "rationale": "Header base64 round-trip preserves taint into interpolated SQL, app.py:31-44.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-12-context-2": {
+    "valid_target_finding": false,
+    "rationale": "possible[1] is B, so app.py:41-42 selects constant bob; no attacker-controlled path.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-07-baseline-2": {
+    "valid_target_finding": true,
+    "rationale": "Header base64 round-trip preserves taint into interpolated SQL, app.py:31-44.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-08-baseline-2": {
+    "valid_target_finding": false,
+    "rationale": "Query input is bound as a SQL parameter at app.py:42-45.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-09-context-2": {
+    "valid_target_finding": true,
+    "rationale": "Constant match branch A preserves query input; sh -c interprets it at app.py:60-64.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-11-baseline-2": {
+    "valid_target_finding": true,
+    "rationale": "Form value flows through ConfigParser keyB to app.py:47-49 unconstrained path existence check. Report supports target CWE-22; no file-content read occurs.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-09-baseline-2": {
+    "valid_target_finding": true,
+    "rationale": "Constant match branch A preserves query input; sh -c interprets it at app.py:60-64.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-10-baseline-2": {
+    "valid_target_finding": false,
+    "rationale": "7*42-86 equals 208, so app.py:38-39 always replaces input with a constant. Baseline overlooks this and makes a false positive.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-11-context-2": {
+    "valid_target_finding": true,
+    "rationale": "Form value flows through ConfigParser keyB to app.py:47-49 unconstrained path existence check. Report supports target CWE-22; no file-content read occurs.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-10-context-2": {
+    "valid_target_finding": false,
+    "rationale": "The condition is always true, so the constant branch is selected. Explanation recognizes no injection, but includes it in findings: reporting false positive.",
+    "reviewer": "Assistant source audit; no target execution"
+  },
+  "case-12-baseline-2": {
+    "valid_target_finding": false,
+    "rationale": "possible[1] is B, so app.py:41-42 selects constant bob; no attacker-controlled path.",
+    "reviewer": "Assistant source audit; no target execution"
+  }
+}
