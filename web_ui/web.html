@@ -21,7 +21,20 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 16px;
 details { margin: 10px 0; }
 summary { cursor: pointer; }
 .model-call { border-top: 1px solid #ccd3df; margin-top: 24px; }
-.reused { color: #5b6472; }
+.badge { display: inline-block; margin-left: 8px; padding: 1px 7px;
+  border: 1px solid #ccd3df; border-radius: 4px; font-size: 12px;
+  font-weight: normal; vertical-align: middle; color: #4a576a; }
+.badge.new { background: #eaf4ed; color: #28563a; }
+.badge.reused { background: #eef1f5; }
+.markdown { border: 1px solid #ccd3df; background: white;
+  padding: 8px 20px; margin: 12px 0; overflow-wrap: anywhere; overflow: auto; }
+.message .markdown p { white-space: normal; }
+.markdown table { border-collapse: collapse; }
+.markdown th, .markdown td { border: 1px solid #ccd3df; padding: 6px 10px; }
+.markdown blockquote { border-left: 3px solid #ccd3df;
+  margin-left: 0; padding-left: 16px; }
+.markdown code { background: #eef1f5; font-size: 14px; }
+.markdown pre code { background: transparent; }
 pre { max-height: 420px; overflow: auto; }
 small { color: #4a576a; }
 input { box-sizing: border-box; width: 100%; padding: 10px; font: inherit;
@@ -55,6 +68,19 @@ results are sent again. Expand a message to see its content.</p>
 <div id="model-calls">No calls yet.</div>
 </section>
 <script>
+function badge(parent, text, kind='') {
+  const span = document.createElement('span');
+  span.className = 'badge ' + kind;
+  span.textContent = text;
+  parent.append(span);
+}
+function markdown(parent, html) {
+  const box = document.createElement('div');
+  box.className = 'markdown';
+  // Server renders Markdown with embedded HTML and images disabled.
+  box.innerHTML = html;
+  parent.append(box);
+}
 const form = document.querySelector('#form');
 const run = document.querySelector('#run');
 const status = document.querySelector('#status');
@@ -110,13 +136,16 @@ form.addEventListener('submit', async event => {
   let previousMessages = new Set();
   let started = false;
   let lastAssistantText = '';
-  function message(role, value, expandable=false) {
+  function message(role, value, expandable=false, rendered=null) {
     const entry = document.createElement('article');
     entry.className = 'message';
     const heading = document.createElement('h3');
-    heading.textContent = role;
+    const [type, context] = role.split(/ · | → /);
+    heading.textContent = context || 'Message';
+    badge(heading, type.toLowerCase());
     entry.append(heading);
-    if (expandable) detail(entry, 'Show content', value);
+    if (rendered) markdown(entry, rendered);
+    else if (expandable) detail(entry, 'Show content', value);
     else {
       const body = document.createElement('p');
       body.textContent = value;
@@ -165,9 +194,13 @@ form.addEventListener('submit', async event => {
         const parts = m.parts || [];
         const names = parts.map(p => p.function_call?.name ||
           p.function_response?.name).filter(Boolean).join(', ');
-        const label = 'Input ' + (index + 1) + ' · ' + m.role +
-          (names ? ' · ' + names : '') + (reused ? ' · sent again' : ' · new');
-        detail(section, label, m).className = reused ? 'reused' : '';
+        const type = parts.some(p => p.function_response) ? 'tool' :
+          m.role === 'model' ? 'assistant' : m.role;
+        const node = detail(section, 'Input ' + (index + 1), m);
+        const legend = node.querySelector('summary');
+        badge(legend, type);
+        if (names) badge(legend, names);
+        badge(legend, reused ? 'sent again' : 'new', reused ? 'reused' : 'new');
       });
       previousMessages = new Set(v.messages.map(m => JSON.stringify(m)));
       calls.set(v.call, section);
@@ -175,11 +208,18 @@ form.addEventListener('submit', async event => {
     } else {
       const text = (v.content?.parts || []).map(p => p.text || '').join('\n');
       if (text) {
-        message('Assistant · LLM call ' + v.call, text);
+        message('Assistant · LLM call ' + v.call, text, false, item.rendered_html);
         lastAssistantText = text;
       }
-      detail(calls.get(v.call) || modelCalls, 'Output from LLM call ' + v.call,
-        v, true);
+      const output = document.createElement('section');
+      const heading = document.createElement('h4');
+      heading.textContent = 'Output from LLM call ' + v.call;
+      badge(heading, 'assistant');
+      if (v.content?.parts?.some(p => p.function_call)) badge(heading, 'tool call');
+      output.append(heading);
+      if (item.rendered_html) markdown(output, item.rendered_html);
+      detail(output, 'Raw response', v, !item.rendered_html);
+      (calls.get(v.call) || modelCalls).append(output);
     }
   }
   let finished = false;
@@ -192,7 +232,9 @@ form.addEventListener('submit', async event => {
     } else if (item.label.startsWith('TOOL RESULT: ')) {
       message('Tool · ' + item.label.slice(13), item.value, true);
     } else if (item.label === 'FINAL ANSWER') {
-      if (item.value !== lastAssistantText) message('Assistant', item.value);
+      if (item.value.trim() !== lastAssistantText.trim()) {
+        message('Assistant', item.value, false, item.rendered_html);
+      }
     } else if (item.label === 'STATUS') {
       status.textContent = item.value;
       finished = true;

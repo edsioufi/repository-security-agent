@@ -14,6 +14,7 @@ from agent import make_agent
 from cli import QUESTION, review
 from tools import RepositoryTools
 from .tracing.model_trace import attach_trace
+from .markdown import render_output
 
 
 def choose_folder():
@@ -128,7 +129,11 @@ def serve(repo=None, model_name="gemini-3.5-flash-lite", port=8767):
             self.respond(200, "application/x-ndjson; charset=utf-8")
 
             def emit(label, value):
-                event = json.dumps({"label": label, "value": value})
+                payload = {"label": label, "value": value}
+                rendered = render_output(label, value)
+                if rendered:
+                    payload["rendered_html"] = rendered
+                event = json.dumps(payload)
                 self.wfile.write((event + "\n").encode())
                 self.wfile.flush()
 

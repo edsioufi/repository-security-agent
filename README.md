@@ -89,7 +89,7 @@ Run review to watch live tool activity and the answer. You can also paste a
 folder path or supply one at startup: `python -m web_ui /path/to/repo`. The native picker
 uses macOS Finder or Tk on other desktop systems; paste a path if unavailable.
 The web UI always uses the live model and has no prompt presets or sample list.
-The UI uses the same agent and runner as the CLI. It has no extra dependencies,
+The UI uses the same agent and runner as the CLI. It uses a small Markdown parser for rendering answers and has no
 account system, upload endpoint, or deployment configuration. It binds only to
 loopback and checks request origin, host, and a per-process request token.
 Keep it local; it is not a production multi-user web service.
