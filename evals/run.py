@@ -95,6 +95,8 @@ async def run_case(case, arm, attempt, budget, output_dir, key):
 
     async def before_model(callback_context, llm_request):
         nonlocal calls
+        if calls >= max_calls:
+            raise RuntimeError("Model call cap reached before request")
         # Bound serialized content/config, plus ample schema/protocol margin.
         wire = llm_request.model_dump_json(exclude={"tools_dict"})
         if len(wire.encode()) > 50_000:
@@ -193,6 +195,9 @@ async def main(args):
                     continue
                 if budget.data["attempts"] >= 48:
                     print("48-attempt cap reached.")
+                    return
+                if budget.data["estimated_usd"] + RESERVE > budget.cap:
+                    print("Cost cap reached; remaining cases are not run.")
                     return
                 result = await run_case(case, arm, attempt, budget, output, key)
                 if args.smoke and result["status"] != "accepted":

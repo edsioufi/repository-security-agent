@@ -50,6 +50,12 @@ def sanitize(text):
 def prepare(source):
     rows = list(csv.reader((source / "expectedresults-0.1.csv").read_text().splitlines()[1:]))
     labels = {r[0]: r for r in rows}
+    pinned = json.loads((ROOT / "manifest.json").read_text())
+    if sha((source / "expectedresults-0.1.csv").read_bytes()) != pinned["labels_sha256"]:
+        raise ValueError("Labels differ from pinned source")
+    expected_hashes = {v["upstream_path"]: v["upstream_sha256"]
+                       for c in pinned["cases"]
+                       for v in c["provenance"].values()}
     cases = []
     for number, (split, identifier) in enumerate(SELECTION, 1):
         name = f"BenchmarkTest{identifier:05}"
@@ -64,6 +70,8 @@ def prepare(source):
             if relative in selected:
                 continue
             raw = path.read_bytes()
+            if sha(raw) != expected_hashes.get(relative):
+                raise ValueError("Source differs from pinned commit: " + relative)
             selected[relative] = raw
             for helper in re.findall(r"(?:import|from) (helpers\.[a-zA-Z_]+)", raw.decode()):
                 target = source / (helper.replace(".", "/") + ".py")

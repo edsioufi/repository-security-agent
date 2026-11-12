@@ -29,7 +29,8 @@ def summarize(batch, attempts=2):
     rows = []
     for case in cases:
         for arm in ("baseline", "context", "single"):
-            for attempt in range(1, attempts + 1):
+            count = attempts if case["split"] == "holdout" and arm != "single" else 1
+            for attempt in range(1, count + 1):
                 name = f'{case["id"]}-{arm}-{attempt}'
                 path = batch / (name + ".json")
                 run = json.loads(path.read_text()) if path.exists() else None
@@ -45,7 +46,7 @@ def summarize(batch, attempts=2):
                            cwe=case["category"], outcome=outcome,
                            other_findings=other)
                 if run:
-                    row.update(model_calls=run.get("model_calls", 0),
+                    row.update(model_calls=min(run.get("model_calls", 0), run.get("max_model_calls", 8)),
                                seconds=run.get("latency_seconds", 0))
                 rows.append(row)
     summary = {"totals": dict(totals), "rows": rows}

@@ -1,4 +1,4 @@
-"""Teaching fallback: deterministic model, real ADK tool execution."""
+"""Offline fallback: deterministic model, real ADK tool execution."""
 from pydantic import PrivateAttr
 from google.adk.models.base_llm import BaseLlm
 from google.adk.models.llm_response import LlmResponse
