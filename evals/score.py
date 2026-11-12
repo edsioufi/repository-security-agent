@@ -28,7 +28,7 @@ def summarize(batch, attempts=2):
     totals = defaultdict(lambda: defaultdict(int))
     rows = []
     for case in cases:
-        for arm in ("baseline", "context"):
+        for arm in ("baseline", "context", "single"):
             for attempt in range(1, attempts + 1):
                 name = f'{case["id"]}-{arm}-{attempt}'
                 path = batch / (name + ".json")

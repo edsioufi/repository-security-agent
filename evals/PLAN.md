@@ -1,6 +1,6 @@
 # Evaluation proposal
 
-Status: plan only. No benchmark runner, optimization, or results have been added.
+Status: implementation approved. Harness and report tool are on evals.
 Implement after review; keep main's small CLI unchanged.
 
 ## Question
@@ -82,3 +82,21 @@ and the complete comparison table. Show a remaining failure or tradeoff. If B
 does not improve the held-out results, report that result rather than inventing
 an improvement or tuning against the holdout. Semgrep can be a later independent
 experiment, not part of this first change.
+
+## Registered execution amendment
+
+Before held-out model runs, add an independent single-call control to address
+whether iteration itself helps. It receives all available fixture source up
+front, the same model and report contract, one model call, and no exploration
+tools. The source ordering and line numbers are deterministic. The two original
+agent arms remain unchanged. This is an exploratory comparison, not a claim
+that a context-starved one-shot model represents all non-agentic systems.
+
+Start with one attempt per case in each of three arms (36 total attempts,
+including the smoke cases). Up to 12 additional attempts may be used only as
+explicitly reported repeats, within the approved 48-attempt/$5 cap. Do not
+overwrite failures. Report smaller sample sizes and unequal repeat counts.
+A free-tier 15 requests/minute limit was observed during the fourth smoke
+attempt. Preserve that incomplete attempt; pace subsequent calls at least
+4.5 seconds apart with identical pacing for both agent arms. Waiting counts
+against the 120-second run budget. No prompt changes were made after the smoke.

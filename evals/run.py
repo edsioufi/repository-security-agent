@@ -75,6 +75,20 @@ async def run_case(case, arm, attempt, budget, output_dir, key):
     agent.instruction += "\n" + (ROOT / "prompts/report.txt").read_text()
     if arm == "context":
         agent.instruction += "\n" + (ROOT / "prompts/context.txt").read_text()
+    question = QUESTION
+    max_calls = 8
+    if arm == "single":
+        agent.tools = [reporter.submit_report]
+        agent.instruction = agent.instruction.replace(
+            "Discover files with your tools, then follow input to sensitive operations.",
+            "Read the supplied complete source, then follow input to sensitive operations."
+        ).replace("You have at most 8 model calls;", "You have one model call;")
+        question += "\nAll available source follows, with line numbers:\n"
+        for name in sorted(source.files):
+            question += "\nFILE " + name + "\n"
+            question += "\n".join(f"{i}: {line}" for i, line in
+                                  enumerate(source.lines(name), 1)) + "\n"
+        max_calls = 1
     trace = []
     usages = []
     calls = 0
@@ -107,7 +121,7 @@ async def run_case(case, arm, attempt, budget, output_dir, key):
         "model": MODEL, "started_at": datetime.now(timezone.utc).isoformat(),
         "instruction_sha256": hashlib.sha256(agent.instruction.encode()).hexdigest(),
         "manifest_sha256": digest(ROOT / "manifest.json"),
-        "max_model_calls": 8, "timeout_seconds": 120,
+        "max_model_calls": max_calls, "timeout_seconds": 120,
         "minimum_call_spacing_seconds": 4.5,
     }
     path = output_dir / f'{case["id"]}-{arm}-{attempt}.json'
@@ -125,9 +139,9 @@ async def run_case(case, arm, attempt, budget, output_dir, key):
             events = runner.run_async(
                 user_id="reviewer", session_id=session.id,
                 new_message=types.Content(
-                    role="user", parts=[types.Part.from_text(text=QUESTION)],
+                    role="user", parts=[types.Part.from_text(text=question)],
                 ),
-                run_config=RunConfig(max_llm_calls=8),
+                run_config=RunConfig(max_llm_calls=max_calls),
             )
             async for event in events:
                 trace.append(event.model_dump(mode="json", exclude_none=True))
@@ -171,9 +185,9 @@ async def main(args):
     for attempt in range(1, args.attempts + 1):
         for i, case in enumerate(cases):
             # Alternate paired execution order; do not favor one with time.
-            arms = ["baseline", "context"]
+            arms = args.arms
             if (i + attempt) % 2 == 0:
-                arms.reverse()
+                arms = list(reversed(arms))
             for arm in arms:
                 if (output / f'{case["id"]}-{arm}-{attempt}.json').exists():
                     continue
@@ -193,5 +207,7 @@ if __name__ == "__main__":
     parser.add_argument("--attempts", type=int, default=1)
     parser.add_argument("--max-usd", type=float, default=5)
     parser.add_argument("--smoke", action="store_true")
+    parser.add_argument("--arms", nargs="+", choices=["baseline", "context", "single"],
+                        default=["baseline", "context"])
     parser.add_argument("--key-file", type=Path)
     asyncio.run(main(parser.parse_args()))
