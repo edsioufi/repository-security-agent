@@ -75,7 +75,9 @@ extensions. `evals` contains the evaluation experiments.
 
 ## Local web interface on web-ui
 
-The server, HTML page, and model tracing live in `web_ui/`.
+The server and HTML page live in `web_ui/`. Model callbacks and trace
+formatting live in `web_ui/tracing/`, keeping the root focused on the agent
+and CLI. The UI sends a fixed security-review request when you run it.
 
 ```sh
 # Set GEMINI_API_KEY privately first.
