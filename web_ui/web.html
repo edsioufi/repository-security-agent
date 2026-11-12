@@ -141,8 +141,8 @@ form.addEventListener('submit', async event => {
     entry.className = 'message';
     const heading = document.createElement('h3');
     const [type, context] = role.split(/ · | → /);
-    heading.textContent = context || 'Message';
-    badge(heading, type.toLowerCase());
+    heading.textContent = context || type;
+    if (context) badge(heading, type.toLowerCase());
     entry.append(heading);
     if (rendered) markdown(entry, rendered);
     else if (expandable) detail(entry, 'Show content', value);
@@ -172,7 +172,7 @@ form.addEventListener('submit', async event => {
         message('System', v.system_instruction, true);
         v.messages.forEach(m => {
           const text = (m.parts || []).map(p => p.text || '').join('\n');
-          if (text) message(m.role === 'user' ? 'Review request' : 'Assistant', text);
+          if (text) message(m.role === 'user' ? 'User' : 'Assistant', text);
         });
         started = true;
       }
@@ -218,7 +218,9 @@ form.addEventListener('submit', async event => {
       if (v.content?.parts?.some(p => p.function_call)) badge(heading, 'tool call');
       output.append(heading);
       if (item.rendered_html) markdown(output, item.rendered_html);
-      detail(output, 'Raw response', v, !item.rendered_html);
+      const {content, ...metadata} = v;
+      detail(output, 'Raw response', content, !item.rendered_html);
+      detail(output, 'Call metadata', metadata);
       (calls.get(v.call) || modelCalls).append(output);
     }
   }
