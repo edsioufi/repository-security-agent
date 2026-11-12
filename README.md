@@ -81,12 +81,15 @@ extensions. Evaluation work will be planned and reviewed before implementation.
 ## Local web interface on dev
 
 ```sh
-.venv/bin/python web.py sample --offline
-# Live: set GEMINI_API_KEY privately, then omit --offline.
+# Set GEMINI_API_KEY privately first.
+.venv/bin/python web.py
 ```
 
-Open http://127.0.0.1:8767. Click Run review to inspect the repository and watch the streamed
-tool activity and answer. The source folder is selected at startup, not through the browser.
+Open http://127.0.0.1:8767. Choose a local repository folder, then click
+Run review to watch live tool activity and the answer. You can also paste a
+folder path or supply one at startup: `web.py /path/to/repo`. The native picker
+uses macOS Finder or Tk on other desktop systems; paste a path if unavailable.
+The web UI always uses the live model and has no prompt presets or sample list.
 The UI uses the same agent and runner as the CLI. It has no extra dependencies,
 account system, upload endpoint, or deployment configuration. It binds only to
 loopback and checks request origin, host, and a per-process request token.

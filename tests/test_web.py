@@ -10,12 +10,20 @@ import unittest
 
 
 class WebTests(unittest.TestCase):
-    def test_offline_stream_and_request_boundary(self):
+    def test_folder_selection_stream_and_request_boundary(self):
         with socket.socket() as probe:
             probe.bind(('127.0.0.1', 0))
             port = probe.getsockname()[1]
         process = subprocess.Popen(
-            [sys.executable, 'web.py', '--offline', '--port', str(port)],
+            [sys.executable, '-c', (
+                "import os, web; from offline import ScriptedModel; "
+                "os.environ['GEMINI_API_KEY']='test-only'; "
+                "original=web.make_agent; "
+                "web.make_agent=lambda source,name,key: "
+                "original(source,name,key,model=ScriptedModel()); "
+                "web.choose_folder=lambda: str(web.Path('sample').resolve()); "
+                f"web.serve(port={port})"
+            )],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         )
         try:
@@ -31,7 +39,8 @@ class WebTests(unittest.TestCase):
             else:
                 self.fail('Web server did not start')
             self.assertEqual(response.status, 200)
-            self.assertIn('Offline scripted demonstration', page)
+            self.assertIn('Choose folder', page)
+            self.assertNotIn('Offline', page)
             self.assertNotIn('Review question', page)
             token = re.search("'X-Review-Token': '([^']+)'", page)[1]
             headers = {
@@ -45,9 +54,29 @@ class WebTests(unittest.TestCase):
             denied = conn.getresponse()
             self.assertEqual(denied.status, 403)
             denied.read()
+            for endpoint in ('/folder', '/review'):
+                conn = http.client.HTTPConnection('127.0.0.1', port, timeout=15)
+                conn.request('POST', endpoint, '{}', headers | {
+                    'X-Review-Token': 'wrong'
+                })
+                denied = conn.getresponse()
+                self.assertEqual(denied.status, 403)
+                denied.read()
             conn = http.client.HTTPConnection('127.0.0.1', port, timeout=15)
-            conn.request('POST', '/review', json.dumps({}),
-                         headers)
+            conn.request('POST', '/folder', '{}', headers)
+            selected = conn.getresponse()
+            self.assertEqual(selected.status, 200)
+            folder = json.loads(selected.read())['path']
+            self.assertEqual(folder, str(Path('sample').resolve()))
+            for payload in ({}, {'repo': ''}, {'repo': '/nonexistent/repo'},
+                            {'repo': folder, 'question': 'override'}):
+                conn = http.client.HTTPConnection('127.0.0.1', port, timeout=15)
+                conn.request('POST', '/review', json.dumps(payload), headers)
+                invalid = conn.getresponse()
+                self.assertEqual(invalid.status, 400)
+                invalid.read()
+            conn = http.client.HTTPConnection('127.0.0.1', port, timeout=15)
+            conn.request('POST', '/review', json.dumps({'repo': folder}), headers)
             response = conn.getresponse()
             self.assertEqual(response.status, 200)
             events = [json.loads(s) for s in response.read().decode().splitlines()]

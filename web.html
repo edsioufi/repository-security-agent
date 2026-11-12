@@ -15,14 +15,21 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 16px;
 #activity { max-height: 340px; overflow: auto; }
 #answer { white-space: pre-wrap; overflow-wrap: anywhere; }
 small { color: #4a576a; }
+input { box-sizing: border-box; width: 100%; padding: 10px; font: inherit;
+  border: 1px solid #b8c2d0; border-radius: 5px; }
+label { display: block; margin-bottom: 6px; }
 </style>
 <h1>Repository Security Agent</h1>
-<p id="mode">__MODE__</p>
-<small>Inspects the source folder selected when the server starts.
-Live runs send retrieved source to Gemini. Offline mode is a scripted demo.</small>
+<p>Review a local repository for security issues.</p>
 <form id="form">
-<button id="run">Run review</button><span id="status" role="status">Ready</span>
+<label for="repo">Repository folder</label>
+<input id="repo" value="__REPO__" placeholder="Choose a folder or paste its path"
+  required autocomplete="off" spellcheck="false">
+<button type="button" id="browse">Choose folder…</button>
+<button id="run">Run review</button>
+<span id="status" role="status">Ready</span>
 </form>
+<small>Live reviews send retrieved source to Gemini.</small>
 <h2>Tool activity</h2><pre id="activity">No calls yet.</pre>
 <h2>Answer</h2><div id="answer" aria-live="polite">No answer yet.</div>
 <script>
@@ -31,9 +38,27 @@ const run = document.querySelector('#run');
 const status = document.querySelector('#status');
 const activity = document.querySelector('#activity');
 const answer = document.querySelector('#answer');
+const repo = document.querySelector('#repo');
+const browse = document.querySelector('#browse');
+const headers = {'Content-Type': 'application/json',
+                 'X-Review-Token': '__TOKEN__'};
+browse.addEventListener('click', async () => {
+  browse.disabled = run.disabled = true;
+  status.textContent = 'Choose a folder in the system dialog…';
+  try {
+    const response = await fetch('/folder', {
+      method: 'POST', headers, body: '{}'
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error);
+    if (result.path) repo.value = result.path;
+    status.textContent = result.path ? 'Ready' : 'Folder selection cancelled.';
+  } catch (error) { status.textContent = error.message; }
+  finally { browse.disabled = run.disabled = false; }
+});
 form.addEventListener('submit', async event => {
   event.preventDefault();
-  run.disabled = true;
+  run.disabled = browse.disabled = repo.disabled = true;
   status.textContent = 'Running…';
   activity.textContent = '';
   answer.textContent = 'Waiting for the agent…';
@@ -54,11 +79,13 @@ form.addEventListener('submit', async event => {
   try {
     const response = await fetch('/review', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json',
-                'X-Review-Token': '__TOKEN__'},
-      body: JSON.stringify({})
+      headers,
+      body: JSON.stringify({repo: repo.value})
     });
-    if (!response.ok) throw new Error('Request rejected: ' + response.status);
+    if (!response.ok) {
+      const failure = await response.json();
+      throw new Error(failure.error || 'Review could not start.');
+    }
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let pending = '';
@@ -76,7 +103,7 @@ form.addEventListener('submit', async event => {
   } catch (error) {
     status.textContent = 'incomplete';
     answer.textContent = error.message;
-  } finally { run.disabled = false; }
+  } finally { run.disabled = browse.disabled = repo.disabled = false; }
 });
 </script>
 </html>
