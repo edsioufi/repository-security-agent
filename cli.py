@@ -28,11 +28,11 @@ async def review(agent, question, max_calls=8):
     failed = False
     try:
         session = await runner.session_service.create_session(
-            app_name="code_reviewer", user_id="student",
+            app_name="code_reviewer", user_id="reviewer",
         )
         async with asyncio.timeout(120):
             async for event in runner.run_async(
-                user_id="student",
+                user_id="reviewer",
                 session_id=session.id,
                 new_message=types.Content(
                     role="user", parts=[types.Part.from_text(text=question)],

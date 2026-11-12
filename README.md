@@ -1,4 +1,4 @@
-# A minimal repository agent
+# Repository Security Agent
 
 Three tools, one Google ADK agent, one terminal command. The model chooses tools,
 ADK runs them, and their results return to the model before its next decision.
@@ -27,9 +27,8 @@ then run:
 ```
 
 Use `--model MODEL_NAME` or `GEMINI_MODEL` to select another available Gemini
-model. The default matches the earlier workshop: `gemini-3.5-flash-lite`.
-Provider access and quotas still apply. On Ed's machine, the existing interpreter
-`../week-6-tool-design-demo/.venv/bin/python` also works without installation.
+model. The default model is `gemini-3.5-flash-lite`.
+Provider access and quotas still apply.
 
 ## Read these files in order
 
@@ -51,7 +50,7 @@ python3 -c 'from tools import RepositoryTools; t = RepositoryTools("sample"); pr
 Then run the agent and point to: its requested arguments, the returned source,
 and the final answer's use of that evidence. Change a tool description or the
 question and observe whether the live model chooses a different investigation.
-For your own project, adapt one tool and explain the reason for your change.
+Adapt tool descriptions and review questions to the repository being inspected.
 
 ## Small, explicit boundaries
 
@@ -60,7 +59,7 @@ secret-named files, binaries, or generated folders. Selection is limited to
 500 files, 64 KB per file, and 1 MB total. Reads return at most 80 numbered lines
 and 6000 characters; search returns at most 30 matches. Inspect truncation flags.
 These filters cannot detect every embedded secret. Use the supplied synthetic
-sample in class; live runs send retrieved source to Gemini.
+sample for initial runs; live runs send retrieved source to Gemini.
 
 The run stops after at most 8 model calls or 120 seconds. Provider requests have
 a 30-second timeout. A failed run is marked incomplete, not a completed review.
@@ -75,3 +74,8 @@ There is no shell-execution tool and no automatic writing or publishing.
 
 This repository is private during instructor review. Public release is a
 separate step after approval.
+
+## Branches
+
+`main` keeps the small CLI implementation. `dev` contains optional interface
+extensions. Evaluation work will be planned and reviewed before implementation.

@@ -1,4 +1,4 @@
-"""A deliberately unsafe query for a classroom code review."""
+"""Database query helper in the synthetic review fixture."""
 
 
 def lookup(db, name):
