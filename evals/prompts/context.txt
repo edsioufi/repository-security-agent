@@ -1,0 +1,3 @@
+Before judging a candidate, read the surrounding function and relevant helpers.
+Do not decide from a search snippet alone. If you cannot obtain that context,
+state the missing evidence and the limitation.

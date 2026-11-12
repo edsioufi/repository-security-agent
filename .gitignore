@@ -8,3 +8,5 @@ __pycache__/
 *.key
 recordings/
 .DS_Store
+evals/fixtures/
+evals/runs/

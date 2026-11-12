@@ -1,0 +1,6 @@
+Finish by calling submit_report with findings, coverage and limitations.
+Do not finish with prose alone. The host validates source references and saves
+the accepted report. An accepted report ends the run without another model call.
+Inspect the request handlers in app.py and helpers relevant to those handlers.
+Report only supported security issues in those handlers; helper initialization
+and absent deployment configuration are outside the assessed scope.
